@@ -100,7 +100,7 @@ public class Reqeust_fragment extends Fragment {
                                 holder.itemView.findViewById(R.id.request_accept_btn).setVisibility(View.VISIBLE);
                                 holder.itemView.findViewById(R.id.request_cancel_btn).setVisibility(View.VISIBLE);
 
-                               // Toast.makeText(getContext(), "received", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "received", Toast.LENGTH_SHORT).show();
                                 userRef.child(list_user_id).addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
