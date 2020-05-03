@@ -48,7 +48,7 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
     private String MessageReceiverId, messageReceiverName, messageSenderId;
     private TextView userName, userLastSeen;
     private CircleImageView userImage;
@@ -68,6 +68,7 @@ public class ChatActivity extends AppCompatActivity {
     private Uri fileUri;
     private StorageTask storageTask;
     private ProgressDialog loadingBar;
+    private ImageButton backImage;
 
 
     @Override
@@ -83,13 +84,17 @@ public class ChatActivity extends AppCompatActivity {
         rootRef = FirebaseDatabase.getInstance().getReference();
 
 
-        ActionBar actionBar = getSupportActionBar();
+
+                ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setDisplayShowCustomEnabled(true);
 
         LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View actionBarView = layoutInflater.inflate(R.layout.custom_chat_layout, null);
         actionBar.setCustomView(actionBarView);
+        backImage=actionBarView.findViewById(R.id.imgBack);
+        backImage.setOnClickListener(this);
+
 
         messageReceiverName = getIntent().getExtras().get("User_name").toString();
         MessageReceiverId = getIntent().getExtras().get("Visit_user_id").toString();
@@ -390,5 +395,12 @@ public class ChatActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.imgBack:
+                onBackPressed();
+        }
 
+    }
 }

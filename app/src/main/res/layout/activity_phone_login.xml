@@ -3,6 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:background="@drawable/backgrounda5"
     android:layout_height="match_parent"
     tools:context=".PhoneLoginActivity">
 
@@ -13,7 +16,6 @@
         android:layout_alignParentStart="true"
         android:layout_marginStart="17dp"
         android:layout_marginEnd="17dp"
-        android:layout_marginTop="180dp"
         android:background="@drawable/input"
         android:padding="8dp"
         android:hint="Write phone number here"
@@ -48,8 +50,9 @@
     android:textAllCaps="false"
     android:layout_marginStart="17dp"
     android:layout_marginEnd="17dp"
+
     android:layout_marginTop="4dp"
-    android:background="@drawable/button"
+    android:background="@drawable/button_background"
     android:textColor="@android:color/background_light"
     android:textSize="15sp"
     android:textStyle="bold"

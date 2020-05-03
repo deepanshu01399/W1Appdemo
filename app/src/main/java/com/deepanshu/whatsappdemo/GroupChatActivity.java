@@ -38,7 +38,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.PriorityQueue;
 
-public class GroupChatActivity extends AppCompatActivity {
+public class GroupChatActivity extends AppCompatActivity implements View.OnClickListener {
     private Toolbar mToolbar;
     private ImageButton sendMsgButton;
     private EditText userMessageInput;
@@ -50,6 +50,8 @@ public class GroupChatActivity extends AppCompatActivity {
     private RecyclerView groupMsgRecyclerView;
     private TextView displayTextMessages;
     private FirebaseAuth mAuth;
+    private ImageButton backImage;
+
 
     private String currentGroupName,currentUserId,currentUserName,currentDate,currentTime;
     private DatabaseReference userRef,GroupNameRef,GroupmessagekeyRef;
@@ -69,6 +71,9 @@ public class GroupChatActivity extends AppCompatActivity {
         LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View actionBarView = layoutInflater.inflate(R.layout.custom_chat_layout, null);
         actionBar.setCustomView(actionBarView);
+        backImage=actionBarView.findViewById(R.id.imgBack);
+        backImage.setOnClickListener(this);
+
 
         currentGroupName=getIntent().getExtras().get("groupName").toString();
 
@@ -229,5 +234,15 @@ public class GroupChatActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+        public void onClick(View v) {
+            switch (v.getId()){
+                case R.id.imgBack:
+                    onBackPressed();
+            }
+
+        }
+
 
 }

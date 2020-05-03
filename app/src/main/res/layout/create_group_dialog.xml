@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    app:cardCornerRadius="@dimen/zero_dp"
+    app:strokeColor="@color/blue"
+    app:strokeWidth="@dimen/two_dp">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            android:layout_marginTop="@dimen/_15dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal"
+
+            xmlns:app="http://schemas.android.com/apk/res-auto">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:id="@+id/infoIcon"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:layout_marginRight="@dimen/_10dp"
+                android:src="@drawable/ic_warning_black_24dp"
+                />
+
+            <TextView
+                android:id="@+id/txtbluethooth_title"
+                android:layout_width="wrap_content"
+                android:textStyle="bold"
+                android:layout_height="wrap_content"
+                android:text="@string/info"
+                android:textColor="@color/home_title_color"
+                android:textSize="@dimen/_20sp"
+                />
+        </LinearLayout>
+        <EditText
+            android:layout_marginTop="@dimen/_10dp"
+            android:id="@+id/edtGrpName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/_20sp"
+            android:layout_marginLeft="@dimen/login_field_margin"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_eighteen"
+            />
+        <RelativeLayout
+            android:id="@+id/linearbtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="@dimen/_20sp"
+            android:layout_marginRight="@dimen/_20sp"
+            android:layout_marginTop="@dimen/dp_ten"
+>
+            <Button
+                android:id="@+id/btnCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_background"
+                android:backgroundTint="@color/red"
+                android:text="@string/cancel"
+                android:gravity="center"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/button_text_size" />
+
+            <Button
+                android:id="@+id/btnCreate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_toLeftOf="@id/btnCancel"
+                android:gravity="center"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/button_background"
+                android:text="@string/turn_on_bt"
+                android:textAllCaps="false"
+                android:backgroundTint="@color/blue"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/button_text_size"
+                />
+        </RelativeLayout>
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

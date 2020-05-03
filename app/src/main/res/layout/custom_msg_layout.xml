@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
+    android:layout_marginBottom="5dp"
     android:layout_height="wrap_content">
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -20,9 +21,11 @@
         android:textSize="16sp"
         android:textStyle="bold"
         android:padding="7dp"
+        android:layout_marginRight="140dp"
+        android:layout_toRightOf="@id/msg_profile_image"
         android:textColor="@android:color/primary_text_light"
         android:background="@drawable/recievermsglayout"
-        android:layout_toEndOf="@id/msg_profile_image"/>
+        />
 
 
     <TextView
@@ -33,11 +36,11 @@
         android:id="@+id/sender_msg_text"
         android:textSize="16sp"
         android:padding="7dp"
+        android:layout_marginLeft="140dp"
         android:textStyle="italic"
         android:textColor="@android:color/primary_text_light"
         android:layout_alignParentTop="@+id/receiver_msg_text"
         android:background="@drawable/sendermsglayout"/>
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -45,37 +48,35 @@
         android:layout_toEndOf="@id/msg_profile_image">
 
 
-    <ImageView
-        android:layout_width="180dp"
-        android:layout_height="180dp"
-        android:layout_alignParentTop="true"
-        android:layout_margin="5dp"
-        android:id="@+id/receiver_msg_Image"
-        android:visibility="visible"
-        android:padding="7dp"
-        android:scaleType="centerCrop"
-        android:background="@drawable/recievermsglayout"></ImageView>
+        <ImageView
+            android:layout_width="180dp"
+            android:layout_height="180dp"
+            android:layout_alignParentTop="true"
+            android:layout_margin="5dp"
+            android:id="@+id/receiver_msg_Image"
+            android:visibility="visible"
+            android:scaleType="centerCrop"
+            android:background="@drawable/recievermsglayout"></ImageView>
     </LinearLayout>
 
-<LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:id="@+id/senderImageLayout"
-    android:layout_alignParentEnd="true"
-    >
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/senderImageLayout"
+        android:layout_alignParentEnd="true"
+        >
 
-    <ImageView
-        android:layout_width="180dp"
-        android:layout_height="180dp"
-        android:layout_margin="5dp"
-        android:id="@+id/sender_msg_image"
-        android:visibility="visible"
-        android:padding="7dp"
-        android:scaleType="centerCrop"
-        android:background="@drawable/sendermsglayout"
-        />
+        <ImageView
+            android:layout_width="180dp"
+            android:layout_height="180dp"
+            android:layout_margin="5dp"
+            android:id="@+id/sender_msg_image"
+            android:visibility="visible"
+            android:scaleType="centerCrop"
+            android:background="@drawable/sendermsglayout"
+            />
 
-</LinearLayout>
+    </LinearLayout>
 
 
 </RelativeLayout>

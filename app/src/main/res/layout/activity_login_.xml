@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient"
     tools:context=".RegisterActivity">
 
     <ScrollView
@@ -13,53 +14,83 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             >
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/login_image"
-                android:layout_marginTop="20dp"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:src="@drawable/dp3"
-                android:scaleType="fitCenter"
-                />
-            <EditText
-                android:id="@+id/login_email"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/emailField"
+                android:layout_marginTop="@dimen/dp_20"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/login_image"
-                android:hint="abc@gmail.com"
-                android:layout_marginTop="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:background="@drawable/input"
-                android:drawableStart="@drawable/email"
-                android:padding="4dp"
-                />
+                android:layout_marginLeft="@dimen/dp_thirty"
+                android:layout_marginRight="@dimen/dp_thirty"
+                android:hint="Email"
+                android:textColorHint="@color/lightgreen"
+                app:boxStrokeColor="@color/black"
+                app:hintEnabled="true"
+                app:hintTextColor="@color/lightgreen"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-            <EditText
-                android:id="@+id/login_password"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/login_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="true"
+                    android:inputType="textImeMultiLine"
+                    android:lines="1"
+
+                    android:maxLines="1"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/red"
+                     />
+
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/Password_filed"
+                android:layout_marginTop="@dimen/dp_20"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/login_email"
-                android:hint="abc@gmail.com"
-                android:inputType="textPassword"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:background="@drawable/input"
-                android:drawableStart="@drawable/password"
-                android:padding="4dp"
-                />
+                android:layout_marginLeft="@dimen/dp_thirty"
+                android:layout_marginRight="@dimen/dp_thirty"
+                android:hint="Password"
+                android:textColorHint="@color/lightgreen"
+                app:boxStrokeColor="@color/black"
+                app:hintEnabled="true"
+                android:layout_below="@id/emailField"
+                app:hintTextColor="@color/lightgreen"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.38">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/login_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="true"
+                    android:lines="1"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/red"
+                     />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/forgetPassword"
-                android:layout_below="@+id/login_password"
+                android:layout_below="@+id/Password_filed"
                 android:layout_marginTop="1dp"
-                android:textSize="20dp"
-                android:layout_marginEnd="20dp"
+                android:textSize="12dp"
+                android:textColor="@color/black"
+                android:layout_marginEnd="30dp"
                 android:gravity="end"
-                android:text="forget Password"
+                android:text="forget Password ?"
                 ></TextView>
 
             <Button
@@ -68,13 +99,16 @@
                 android:id="@+id/login_button"
                 android:layout_below="@+id/forgetPassword"
                 android:padding="2dp"
+                android:backgroundTint="@color/blue"
                 android:layout_marginTop="10dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
                 android:textSize="24dp"
+                android:textAllCaps="false"
                 android:textColor="#ffffff"
                 android:text="Login"
-                android:background="@color/colorPrimary"
+                android:background="@drawable/button_background"
+
                 ></Button>
 
             <TextView
@@ -84,11 +118,12 @@
                 android:layout_below="@+id/login_button"
                 android:padding="4dp"
                 android:layout_marginTop="1dp"
-                android:textSize="24dp"
+                android:textSize="20dp"
+                android:textColor="@color/black"
                 android:gravity="end"
                 android:textAlignment="center"
                 android:text="Need to create an Account ?"
-                ></TextView>
+                tools:ignore="RtlCompat"></TextView>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -97,11 +132,12 @@
                 android:padding="4dp"
                 android:layout_marginTop="1dp"
                 android:textSize="24dp"
+                android:textColor="@color/black"
                 android:gravity="end"
                 android:textAlignment="center"
-                android:text="Login using your"
+                android:text="Or \n Login using "
                 android:textStyle="bold"
-                ></TextView>
+                tools:ignore="RtlCompat"></TextView>
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -109,13 +145,14 @@
                 android:layout_below="@+id/login_using"
                 android:padding="2dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
                 android:textSize="24dp"
+                android:backgroundTint="@color/blue"
+                android:background="@drawable/button_background"
                 android:text="Phone"
                 android:textColor="#ffffff"
                 android:textAllCaps="false"
-                android:background="@color/colorPrimary"
                 android:drawableStart="@drawable/phone"
 
                 ></Button>

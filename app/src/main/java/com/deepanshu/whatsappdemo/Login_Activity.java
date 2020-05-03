@@ -18,6 +18,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -96,7 +97,8 @@ public class Login_Activity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 sendUserToMainActivity();
-                                Toast.makeText(Login_Activity.this, "login successfull", Toast.LENGTH_LONG).show();
+                                ColoredSnackbar.info(Snackbar.make(findViewById(android.R.id.content), "Login Successfull", Snackbar.LENGTH_LONG)).show();
+                               // Toast.makeText(Login_Activity.this, "login successfull", Toast.LENGTH_LONG).show();
                                 loadingBar.dismiss();
 
                             }
@@ -104,7 +106,8 @@ public class Login_Activity extends AppCompatActivity {
 
                     } else{
                         String message=task.getException().toString();
-                        Toast.makeText(Login_Activity.this,"Error"+message,Toast.LENGTH_LONG).show();
+                        ColoredSnackbar.alert(Snackbar.make(findViewById(android.R.id.content), "Error : "+message, Snackbar.LENGTH_LONG)).show();
+//                        Toast.makeText(Login_Activity.this,"Error"+message,Toast.LENGTH_LONG).show();
                         loadingBar.dismiss();
 
                     }
