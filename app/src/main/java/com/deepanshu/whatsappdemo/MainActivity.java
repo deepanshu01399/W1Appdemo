@@ -3,13 +3,16 @@ package com.deepanshu.whatsappdemo;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -20,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
@@ -44,7 +48,9 @@ import java.util.Calendar;
 import java.util.EventListener;
 import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity {
+import pl.droidsonroids.gif.GifImageView;
+
+public class MainActivity extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener {
     private Toolbar mToolbar;
     private ViewPager myViewPager;
     private TabLayout myTabLayout;
@@ -53,6 +59,14 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference Rootref;
     String currentUserId;
     ProgressBar progressBar;
+    private Button btnCheck;
+    android.app.AlertDialog.Builder alertDialogBuilder;
+    android.app.AlertDialog alertDialog;
+    GifImageView NoInternetGif;
+    LinearLayout linearLayout;
+    SearchView searchView;
+    MenuItem myActionMenuItem;
+
 
 
     @Override
@@ -69,8 +83,10 @@ public class MainActivity extends AppCompatActivity {
         myViewPager.setAdapter(myTabsAccessorAdapter);
         myTabLayout = (TabLayout) findViewById(R.id.main_tabs);
         myTabLayout.setupWithViewPager(myViewPager);
+        NoInternetGif = findViewById(R.id.NoInternetGif);
         progressBar = findViewById(R.id.spin_kit);
 
+        checkConnection();
 
 
     }
@@ -149,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.option_menu, menu);
+        myActionMenuItem= menu.findItem( R.id.action_search);
         return true;
 
     }
@@ -156,62 +173,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         super.onOptionsItemSelected(item);
+        if(item.getItemId() == R.id.action_search){
+            searchView = (SearchView) myActionMenuItem.getActionView();
+            searchAction();
+        }
         if (item.getItemId() == R.id.main_logout_options) {
-                   /* dialog = new Dialog(ConsumerVerificationActivity.this);
-        dialog.setContentView(R.layout.custom_bluethooth_dialog);
-        dialog.setCancelable(false);
-        dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        Button btnCancel = dialog.findViewById(R.id.btnDeny);
-        Button btnTurnOn=dialog.findViewById(R.id.btnTurnOn);
-        btnTurnOn.setVisibility(View.GONE);
-        RelativeLayout relativeLayout=dialog.findViewById(R.id.linearbtn);
-        ((RelativeLayout) relativeLayout).setGravity(Gravity.CENTER);
-        TextView txtMsg = dialog.findViewById(R.id.txtbluethooth_Msg);
-        txtMsg.setText("User Pending Action");
-        //txtMsg.setText(transactionSummaryResponse.getMessage().getErrorMessage());
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                finish();
-            }
-        });
-        dialog.show();
-       */
-            LayoutInflater layoutInflater = LayoutInflater.from(this);
-            View promptView = layoutInflater.inflate(R.layout.custom_bluethooth_dialog, null);
-            final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-            alertDialog.setCancelable(false);
-            alertDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            Button btnCancel = promptView.findViewById(R.id.cancelBtn);
-            Button btnlogout=promptView.findViewById(R.id.logout_button);
-            btnlogout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    alertDialog.dismiss();
-                    FirebaseUser currentUser = mAuth.getCurrentUser();
-                    if (currentUser != null) {
-                        Update_UserStatus("offline");
-                    }
-                    mAuth.signOut();
-                    sendUserTOLoginActivity();
-                    finish();
-                }
-            });
-            btnCancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    alertDialog.dismiss();
-                }
-            });
-            alertDialog.setView(promptView);
-            alertDialog.show();
-
-             }
-
+            logoutDialog();
+        }
         if (item.getItemId() == R.id.main_createGroup) {
             RequestNewGroup();
-
         }
         if (item.getItemId() == R.id.main_settings_options) {
             sendUserTOSettingActivity();
@@ -221,6 +191,56 @@ public class MainActivity extends AppCompatActivity {
 
         }
         return true;
+    }
+
+    private void logoutDialog() {
+        LayoutInflater layoutInflater = LayoutInflater.from(this);
+        View promptView = layoutInflater.inflate(R.layout.custom_bluethooth_dialog, null);
+        final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setCancelable(false);
+        alertDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        Button btnCancel = promptView.findViewById(R.id.cancelBtn);
+        Button btnlogout=promptView.findViewById(R.id.logout_button);
+        btnlogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+                FirebaseUser currentUser = mAuth.getCurrentUser();
+                if (currentUser != null) {
+                    Update_UserStatus("offline");
+                }
+                mAuth.signOut();
+                sendUserTOLoginActivity();
+                finish();
+            }
+        });
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.setView(promptView);
+        alertDialog.show();
+    }
+
+    private void searchAction() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // Toast like print
+                if( ! searchView.isIconified()) {
+                    searchView.setIconified(true);
+                }
+                myActionMenuItem.collapseActionView();
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String s) {
+                // UserFeedback.show( "SearchOnQueryTextChanged: " + s);
+                return false;
+            }
+        });
     }
 
 
@@ -331,6 +351,75 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+    private void checkConnection() {
+        boolean isConnected = ConnectivityReceiver.isConnected();
+        showSnack(isConnected);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // register connection status listener
+        Myapplication.getInstance().setConnectivityListener(this);
+    }
 
+    // Showing the status in Snackbar
+    private void showSnack(boolean isConnected)     {
+        String message;
+        int color;
+        if (isConnected) {
+            message = "Good! Connected to Internet";
+            color = Color.WHITE;
+            if (alertDialog != null) {
+                alertDialog.dismiss();
+            }
+            NoInternetGif.setVisibility(View.GONE);
+            myViewPager.setVisibility(View.VISIBLE);
+            ColoredSnackbar.confirm(Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG)).show();
+
+        } else {
+            message = "Sorry! Not connected to internet";
+            color = Color.RED;
+            ColoredSnackbar.alert(Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG)).show();
+            alertDialogBuilder = new android.app.AlertDialog.Builder(this);
+            alertDialogBuilder
+                    .setTitle("Internet Alert")
+                    .setMessage("Internet connection is lost ! please check connection..")
+                    .setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            myViewPager.setVisibility(View.GONE);
+                            NoInternetGif.setVisibility(View.VISIBLE);
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            //checkConnection();
+                            finish();
+                        }
+
+                    });
+            alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+            Button buttonPositive = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            buttonPositive.setTextColor(ContextCompat.getColor(this, R.color.green));
+            buttonPositive.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
+            Button buttonNegative = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+            buttonNegative.setTextColor(ContextCompat.getColor(this, R.color.red));
+            buttonNegative.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
+        }
+
+    }
+    /**
+     * Callback will be triggered when there is change in
+     * network connection
+     */
+
+    @Override
+    public void onNetworkConnectionChanged(boolean isConnected) {
+        showSnack(isConnected);
+    }
 }

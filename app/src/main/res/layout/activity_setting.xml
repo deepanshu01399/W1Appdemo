@@ -74,6 +74,33 @@
         android:textStyle="bold"
 
         ></Button>
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cvToggle"
+        android:layout_below="@id/update_setting_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/_4dp"
+        app:cardElevation="@dimen/_4dp"
+        app:cardCornerRadius="@dimen/dp_five"
+        app:cardUseCompatPadding="true"
+        android:layout_marginStart="@dimen/_10dp"
+        android:layout_marginEnd="@dimen/_10dp"
+        app:strokeColor="#E3E3E3"
+        app:strokeWidth="@dimen/_1dp"
+        android:backgroundTint="@color/blue"
+        android:clipToPadding="false"
+        android:layout_marginBottom="@dimen/dp_eight">
+        <Switch
+            android:id="@+id/switchTransaction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:text="Whatsapp Mode"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_eighteen"
+            android:layout_margin="@dimen/dp_ten"/>
+    </com.google.android.material.card.MaterialCardView>
 
 
 </RelativeLayout>
