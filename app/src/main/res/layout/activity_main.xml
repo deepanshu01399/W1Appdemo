@@ -20,7 +20,7 @@
             android:id="@+id/main_tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/blue"
+            android:backgroundTint="@color/home_title_color"
             app:tabTextColor="@color/white">
 
         </com.google.android.material.tabs.TabLayout>

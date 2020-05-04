@@ -124,7 +124,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginLeft="@dimen/dp_thirty"
                 android:layout_marginRight="@dimen/dp_thirty"
-                android:backgroundTint="@color/blue"
+                android:backgroundTint="@color/home_title_color"
                 android:textSize="24dp"
                 android:textAllCaps="false"
                 android:textColor="#ffffff"

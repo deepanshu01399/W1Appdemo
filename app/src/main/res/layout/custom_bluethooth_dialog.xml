@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     app:cardCornerRadius="@dimen/zero_dp"
-    app:strokeColor="@color/blue"
+    app:strokeColor="@color/home_title_color"
     app:strokeWidth="@dimen/two_dp">
     <LinearLayout
         android:layout_width="match_parent"
@@ -45,7 +45,7 @@
                 android:layout_weight="1"
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/dp_thirty"
-                android:backgroundTint="@color/blue"
+                android:backgroundTint="@color/home_title_color"
                 android:gravity="center"
                 android:text="@string/yes_log_out" />
 

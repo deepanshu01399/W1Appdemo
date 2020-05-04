@@ -34,9 +34,9 @@
                     android:layout_marginRight="20sp"
                     android:text="User Name"
                     android:textAlignment="textStart"
-                    android:textColor="@color/blue"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textColor="@color/UserTextColor"
+                    android:textSize="16sp"
+                     />
 
                 <ImageView
                     android:id="@+id/user_online_icon"

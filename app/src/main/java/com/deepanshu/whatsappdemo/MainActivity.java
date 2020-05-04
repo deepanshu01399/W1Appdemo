@@ -3,6 +3,7 @@ package com.deepanshu.whatsappdemo;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -12,6 +13,7 @@ import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -50,6 +52,8 @@ import java.util.HashMap;
 
 import pl.droidsonroids.gif.GifImageView;
 
+import static com.deepanshu.whatsappdemo.SettingActivity.CHK_STATUS;
+
 public class MainActivity extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener {
     private Toolbar mToolbar;
     private ViewPager myViewPager;
@@ -66,7 +70,8 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
     LinearLayout linearLayout;
     SearchView searchView;
     MenuItem myActionMenuItem;
-
+    SharedPreferencesFactory sharedPreferencesFactory=null;
+    SharedPreferences prefs;
 
 
     @Override
@@ -87,7 +92,34 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
         progressBar = findViewById(R.id.spin_kit);
 
         checkConnection();
+        settheme();
 
+
+    }
+
+    private void settheme() {
+        sharedPreferencesFactory = SharedPreferencesFactory.getInstance(MainActivity.this);
+        prefs = sharedPreferencesFactory.getSharedPreferences(MODE_PRIVATE);
+
+        if (sharedPreferencesFactory.getPreferenceValue(CHK_STATUS) != null) {
+            if (sharedPreferencesFactory.getPreferenceValue(CHK_STATUS).equalsIgnoreCase("TRUE")) {
+                startnightmode();
+
+            } else {
+                stardaymode();
+            }
+        }
+    }
+
+    private void stardaymode() {
+        //sharedPreferencesFactory.writePreferenceValue(CHK_STATUS, "FALSE");
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
+    }
+
+    private void startnightmode() {
+        //sharedPreferencesFactory.writePreferenceValue(CHK_STATUS, "TRUE");
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 
     }
 
@@ -165,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.option_menu, menu);
-        myActionMenuItem= menu.findItem( R.id.action_search);
+        myActionMenuItem = menu.findItem(R.id.action_search);
         return true;
 
     }
@@ -173,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         super.onOptionsItemSelected(item);
-        if(item.getItemId() == R.id.action_search){
+        if (item.getItemId() == R.id.action_search) {
             searchView = (SearchView) myActionMenuItem.getActionView();
             searchAction();
         }
@@ -200,7 +232,7 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
         alertDialog.setCancelable(false);
         alertDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         Button btnCancel = promptView.findViewById(R.id.cancelBtn);
-        Button btnlogout=promptView.findViewById(R.id.logout_button);
+        Button btnlogout = promptView.findViewById(R.id.logout_button);
         btnlogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -229,12 +261,13 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // Toast like print
-                if( ! searchView.isIconified()) {
+                if (!searchView.isIconified()) {
                     searchView.setIconified(true);
                 }
                 myActionMenuItem.collapseActionView();
                 return false;
             }
+
             @Override
             public boolean onQueryTextChange(String s) {
                 // UserFeedback.show( "SearchOnQueryTextChanged: " + s);
@@ -256,8 +289,8 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
             @Override
             public void onClick(View v) {
                 //if (ConnectivityUtils.isConnected(DeviceListActivity.this)) {
-                    dialog.dismiss();
-                final EditText editText= dialog.findViewById(R.id.edtGrpName);
+                dialog.dismiss();
+                final EditText editText = dialog.findViewById(R.id.edtGrpName);
                 String groupName = editText.getText().toString();
                 if (TextUtils.isEmpty(groupName)) {
                     ColoredSnackbar.alert(Snackbar.make(findViewById(android.R.id.content), "please write Group Name", Snackbar.LENGTH_LONG)).show();
@@ -266,9 +299,9 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
                 }
 
             } //else {
-                    //dialog.dismiss();
-                    //ColoredSnackbar.alert(Snackbar.make(findViewById(android.R.id.content), getResources().getString(R.string.no_internet_connection), Snackbar.LENGTH_LONG)).show();
-                //}}
+            //dialog.dismiss();
+            //ColoredSnackbar.alert(Snackbar.make(findViewById(android.R.id.content), getResources().getString(R.string.no_internet_connection), Snackbar.LENGTH_LONG)).show();
+            //}}
         });
         deny.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -278,33 +311,6 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
             }
         });
         dialog.show();
-       /* AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.AlertDialog);
-        builder.setTitle("Enter Group Name :");
-        final EditText groupNameField = new EditText(MainActivity.this);
-        groupNameField.setHint("e.g Avengers");
-        builder.setView(groupNameField);
-
-        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String groupName = groupNameField.getText().toString();
-                if (TextUtils.isEmpty(groupName)) {
-                    ColoredSnackbar.alert(Snackbar.make(findViewById(android.R.id.content), "please write Group Name", Snackbar.LENGTH_LONG)).show();
-                } else {
-                    CreateNewGroup(groupName);
-                }
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-
-            }
-        });
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-*/
     }
 
     private void CreateNewGroup(final String groupName) {
@@ -313,7 +319,7 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                           // Toast.makeText(MainActivity.this, groupName + " group is Created successfully", Toast.LENGTH_LONG).show();
+                            // Toast.makeText(MainActivity.this, groupName + " group is Created successfully", Toast.LENGTH_LONG).show();
                             ColoredSnackbar.info(Snackbar.make(findViewById(android.R.id.content), "Group is Created Successfully", Snackbar.LENGTH_LONG)).show();
                         }
                     }
@@ -351,6 +357,7 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
 
 
     }
+
     private void checkConnection() {
         boolean isConnected = ConnectivityReceiver.isConnected();
         showSnack(isConnected);
@@ -364,7 +371,7 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
     }
 
     // Showing the status in Snackbar
-    private void showSnack(boolean isConnected)     {
+    private void showSnack(boolean isConnected) {
         String message;
         int color;
         if (isConnected) {
@@ -413,6 +420,7 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
         }
 
     }
+
     /**
      * Callback will be triggered when there is change in
      * network connection

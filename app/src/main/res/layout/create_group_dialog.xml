@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     app:cardCornerRadius="@dimen/zero_dp"
-    app:strokeColor="@color/blue"
+    app:strokeColor="@color/home_title_color"
     app:strokeWidth="@dimen/two_dp">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -62,7 +62,7 @@
             android:layout_marginLeft="@dimen/_20sp"
             android:layout_marginRight="@dimen/_20sp"
             android:layout_marginTop="@dimen/dp_ten"
->
+            >
             <Button
                 android:id="@+id/btnCancel"
                 android:layout_width="wrap_content"
@@ -86,7 +86,7 @@
                 android:background="@drawable/button_background"
                 android:text="@string/turn_on_bt"
                 android:textAllCaps="false"
-                android:backgroundTint="@color/blue"
+                android:backgroundTint="@color/home_title_color"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/button_text_size"
                 />
