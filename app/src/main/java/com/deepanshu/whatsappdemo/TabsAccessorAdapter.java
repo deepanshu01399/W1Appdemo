@@ -26,11 +26,11 @@ public class TabsAccessorAdapter extends FragmentPagerAdapter  {
                 GroupFragment groupFragment = new GroupFragment();
                 return groupFragment;
             case 2:
-                ContectFragment contectFragment = new ContectFragment();
-                return contectFragment;
-            case 3:
                 Reqeust_fragment request_fragment = new Reqeust_fragment();
                 return request_fragment;
+            case 3:
+                ContectFragment contectFragment = new ContectFragment();
+                return contectFragment;
             default:
                 return null;
         }
@@ -51,9 +51,9 @@ public class TabsAccessorAdapter extends FragmentPagerAdapter  {
             case 1:
                 return "Groups";
             case 2:
-                return "Contacts";
-            case 3:
                 return "Requests";
+            case 3:
+                return "Contacts";
             default:
                 return null;
         }

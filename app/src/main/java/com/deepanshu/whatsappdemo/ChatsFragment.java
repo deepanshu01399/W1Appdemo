@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -36,6 +37,7 @@ private RecyclerView chatsList;
 private DatabaseReference chatReference,UserRef;//to create query we need chatref;
 private FirebaseAuth mAuth;
 private String CurrentUserId;
+private Boolean isImageFitToScreen=false;
 public  ChatsFragment() {
     }
 
@@ -98,7 +100,22 @@ public  ChatsFragment() {
 
                                    // holder.UserStatus.setText(profileStatus);
                                     Picasso.get().load(profileImage[0]).placeholder(R.drawable.profile_image).into(holder.user_profileImage);
-                                    holder.itemView.setOnClickListener(new View.OnClickListener() {
+                                   /* holder.user_profileImage.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            if(isImageFitToScreen) {
+                                                isImageFitToScreen=false;
+                                                holder.user_profileImage.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                                                holder.user_profileImage.setAdjustViewBounds(true);
+                                            }else{
+                                                isImageFitToScreen=true;
+                                                holder.user_profileImage.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+                                                holder.user_profileImage.setScaleType(ImageView.ScaleType.FIT_XY);
+                                            }
+
+                                        }
+                                    });
+                                   */ holder.itemView.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
                                             Intent chatIntent=new Intent(getContext(),ChatActivity.class);
