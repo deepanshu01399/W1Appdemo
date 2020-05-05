@@ -10,24 +10,39 @@
     <include
         android:id="@+id/setting_toolbar"
         layout="@layout/app_bar_layout" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/_10dp"
+        android:layout_below="@id/setting_toolbar"
+        android:id="@+id/profile_linearlayout"
+        >
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profile_image"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/profile_image"
+            app:civ_border_color="@color/home_title_color"
+            app:civ_border_width="5dp" />
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profile_image"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_below="@+id/setting_toolbar"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="80dp"
-        android:src="@drawable/profile_image"
-        app:civ_border_color="@color/home_title_color"
-        app:civ_border_width="5dp" />
+        <ImageView
+            android:layout_width="wrap_content"
 
+            android:layout_height="wrap_content"
+            android:layout_below="@id/profile_image"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="-50dp"
+            android:layout_marginLeft="250dp"
+            android:src="@drawable/ic_mode_edit_black_24dp"></ImageView>
+    </RelativeLayout>
     <EditText
         android:id="@+id/set_user_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/profile_image"
+        android:layout_below="@+id/profile_linearlayout"
         android:layout_marginStart="15dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="15dp"
@@ -85,7 +100,6 @@
         app:cardUseCompatPadding="true"
         android:layout_marginStart="@dimen/_10dp"
         android:layout_marginEnd="@dimen/_10dp"
-        app:strokeColor="#E3E3E3"
         app:strokeWidth="@dimen/_1dp"
         android:backgroundTint="@color/home_title_color"
         android:clipToPadding="false"

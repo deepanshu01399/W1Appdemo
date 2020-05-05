@@ -2,6 +2,7 @@ package com.deepanshu.whatsappdemo;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -29,6 +30,10 @@ import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.deepanshu.whatsappdemo.MainActivity.ONLINE_STATUS;
+import static com.deepanshu.whatsappdemo.SettingActivity.CHK_STATUS;
+
 
 public class ChatsFragment extends Fragment {
 private View privateChat_View;
@@ -36,6 +41,8 @@ private RecyclerView chatsList;
 private DatabaseReference chatReference,UserRef;//to create query we need chatref;
 private FirebaseAuth mAuth;
 private String CurrentUserId;
+SharedPreferencesFactory sharedPreferencesFactory;
+SharedPreferences prefs;
 public  ChatsFragment() {
     }
 
@@ -50,6 +57,9 @@ public  ChatsFragment() {
         chatsList.setLayoutManager(new LinearLayoutManager(getContext()));
         chatReference= FirebaseDatabase.getInstance().getReference().child("Contacts").child(CurrentUserId);
         UserRef= FirebaseDatabase.getInstance().getReference().child("Users");
+        sharedPreferencesFactory= SharedPreferencesFactory.getInstance(getContext());
+        SharedPreferences sharedPreferences=sharedPreferencesFactory.getSharedPreferences(MODE_PRIVATE);
+
 
         return privateChat_View;
     }
@@ -85,18 +95,23 @@ public  ChatsFragment() {
                                     final String userLastSeenTime=dataSnapshot.child("userState").child("time").getValue().toString();
 
                                     holder.userName.setText(profileName);
-                                    if(userState.equalsIgnoreCase("online")){
-                                        holder.online_staus.setVisibility(View.VISIBLE);
-                                        holder.UserStatus.setText(profileStatus);
+                                    /*sharedPreferencesFactory = SharedPreferencesFactory.getInstance(getContext());
+                                    prefs = sharedPreferencesFactory.getSharedPreferences(MODE_PRIVATE);
 
-                                    }
-                                    else {
-                                        holder.online_staus.setVisibility(View.INVISIBLE);
-                                        holder.UserStatus.setText("Last seen:"+userLastSeenTime+"\n"+userLastSeenDate);
+                                    if (sharedPreferencesFactory.getPreferenceValue(ONLINE_STATUS) != null) {
+                                        if (sharedPreferencesFactory.getPreferenceValue(ONLINE_STATUS).equalsIgnoreCase("online")) {
+*/
+                                            if(userState.equalsIgnoreCase("online")){
+                                            holder.online_staus.setVisibility(View.VISIBLE);
+                                            holder.UserStatus.setText(profileStatus);
 
-                                    }
+                                        } else {
+                                            holder.online_staus.setVisibility(View.INVISIBLE);
+                                            holder.UserStatus.setText("Last seen:" + userLastSeenTime + "\n" + userLastSeenDate);
 
-                                   // holder.UserStatus.setText(profileStatus);
+                                        }
+
+                                   //holder.UserStatus.setText(profileStatus);
                                     Picasso.get().load(profileImage[0]).placeholder(R.drawable.profile_image).into(holder.user_profileImage);
                                     holder.itemView.setOnClickListener(new View.OnClickListener() {
                                         @Override

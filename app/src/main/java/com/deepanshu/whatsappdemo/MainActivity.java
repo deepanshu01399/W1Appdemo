@@ -55,6 +55,7 @@ import pl.droidsonroids.gif.GifImageView;
 import static com.deepanshu.whatsappdemo.SettingActivity.CHK_STATUS;
 
 public class MainActivity extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener {
+    public static final String ONLINE_STATUS = null;
     private Toolbar mToolbar;
     private ViewPager myViewPager;
     private TabLayout myTabLayout;
@@ -90,6 +91,8 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
         myTabLayout.setupWithViewPager(myViewPager);
         NoInternetGif = findViewById(R.id.NoInternetGif);
         progressBar = findViewById(R.id.spin_kit);
+        //sharedPreferencesFactory= SharedPreferencesFactory.getInstance(this);
+        //SharedPreferences sharedPreferences=sharedPreferencesFactory.getSharedPreferences(MODE_PRIVATE);
 
         checkConnection();
         settheme();
@@ -136,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
             sendUserTOLoginActivity();
         } else {
             verifUserExistence();//verify usrname exixts
+            //sharedPreferencesFactory.writePreferenceValue(ONLINE_STATUS,"online");
             Update_UserStatus("online");
 
         }
@@ -148,7 +152,10 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         if (currentUser != null) {
-            Update_UserStatus("offline");
+            //sharedPreferencesFactory.writePreferenceValue(ONLINE_STATUS,"offline");
+            //Update_UserStatus("offline");
+
+
         }
     }
 
@@ -159,6 +166,7 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         if (currentUser != null) {
+           // sharedPreferencesFactory.writePreferenceValue(ONLINE_STATUS,"offline");
             Update_UserStatus("offline");
         }
     }
@@ -239,6 +247,7 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
                 alertDialog.dismiss();
                 FirebaseUser currentUser = mAuth.getCurrentUser();
                 if (currentUser != null) {
+                    //sharedPreferencesFactory.writePreferenceValue(ONLINE_STATUS,"offline");
                     Update_UserStatus("offline");
                 }
                 mAuth.signOut();

@@ -334,17 +334,6 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    public void lightmode(View view) {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-        finish();
-    }
-    public void nighmode(View view) {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-        finish();
-    }
-
     @Override
     public void onClick(View v) {
 

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_gravity="center"
     android:gravity="center"
-    android:background="@drawable/backgrounda5"
+    android:background="@drawable/gradient"
     android:layout_height="match_parent"
     tools:context=".PhoneLoginActivity">
 
