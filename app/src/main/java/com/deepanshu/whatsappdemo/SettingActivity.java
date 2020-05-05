@@ -4,10 +4,12 @@ package com.deepanshu.whatsappdemo;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.renderscript.ScriptGroup;
@@ -15,7 +17,9 @@ import android.telephony.mbms.MbmsErrors;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.data.model.User;
@@ -44,7 +48,7 @@ import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class SettingActivity extends AppCompatActivity {
+public class SettingActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
     private Button UpdateAccountSettings;
     private EditText userName,userstatus;
     private CircleImageView userProfileImage;
@@ -58,6 +62,10 @@ public class SettingActivity extends AppCompatActivity {
     private String Cheker="",myUri=" ";
     private  final int requestcodeforDp=43;
     private StorageTask uploadTask;
+    private Switch switchbtn;
+    SharedPreferencesFactory sharedPreferencesFactory;
+    public static final String CHK_STATUS ="STATUS" ;
+
 
 
 
@@ -70,8 +78,14 @@ public class SettingActivity extends AppCompatActivity {
         currentUserId=mAuth.getCurrentUser().getUid();
         RootRef= FirebaseDatabase.getInstance().getReference();
         UserProfileImageRef =FirebaseStorage.getInstance().getReference().child("Profile Images");
+        sharedPreferencesFactory= SharedPreferencesFactory.getInstance(this);
+        SharedPreferences sharedPreferences=sharedPreferencesFactory.getSharedPreferences(MODE_PRIVATE);
+        switchbtn=findViewById(R.id.switchTransaction);
+        switchbtn.setOnCheckedChangeListener(this);
+        setswitchstaus();
         Initialization();
         RetriveUserInfo();
+
 
         UpdateAccountSettings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,6 +114,14 @@ public class SettingActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void setswitchstaus() {
+            if (sharedPreferencesFactory.getPreferenceValue(CHK_STATUS) != null && sharedPreferencesFactory.getPreferenceValue(CHK_STATUS).equalsIgnoreCase("TRUE")) {
+                switchbtn.setChecked(true);
+            } else
+                switchbtn.setChecked(false);
+
     }
 
     private void RetriveUserInfo() {
@@ -312,6 +334,37 @@ public class SettingActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onClick(View v) {
+
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if(isChecked==true){
+            //Toast.makeText(this, "checked", Toast.LENGTH_SHORT).show();
+            startnightmode();
 
 
+        }else {
+            //Toast.makeText(this, "Unchecked", Toast.LENGTH_SHORT).show();
+            stardaymode();
+           }
+    }
+
+    private void stardaymode() {
+        sharedPreferencesFactory.writePreferenceValue(CHK_STATUS, "FALSE");
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        //startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        //finish();
+
+    }
+
+    private void startnightmode() {
+        sharedPreferencesFactory.writePreferenceValue(CHK_STATUS, "TRUE");
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        //startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        //finish();
+
+    }
 }

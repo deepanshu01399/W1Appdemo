@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient"
     tools:context=".RegisterActivity">
 
     <ScrollView
@@ -22,6 +23,68 @@
                 android:src="@drawable/signup_photo"
                 android:scaleType="fitCenter"
                 />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/emailField"
+                android:layout_marginTop="@dimen/dp_20"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_thirty"
+                android:layout_marginRight="@dimen/dp_thirty"
+                android:layout_below="@+id/signUp_image"
+                android:textColorHint="@color/lightgreen"
+                app:boxStrokeColor="@color/black"
+                app:hintEnabled="true"
+                android:hint="Email"
+                app:hintTextColor="@color/lightgreen"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.38">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/signUp_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="true"
+                    android:inputType="textImeMultiLine"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:textColor="@color/lightgreen"
+                    android:textColorHint="@color/red"
+                    android:textSize="@dimen/sp_sixteen" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/Password_filed"
+                android:layout_marginTop="@dimen/dp_20"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_thirty"
+                android:layout_marginRight="@dimen/dp_thirty"
+                android:textColorHint="@color/lightgreen"
+                app:boxStrokeColor="@color/black"
+                app:hintEnabled="true"
+                android:hint="password"
+                android:layout_below="@+id/emailField"
+                app:hintTextColor="@color/lightgreen">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/signUp_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="true"
+                    android:inputType="textImeMultiLine"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:textColor="@color/lightgreen"
+                    android:textColorHint="@color/red"
+                    android:textSize="@dimen/sp_sixteen" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+<!--
             <EditText
                 android:id="@+id/signUp_email"
                 android:layout_width="match_parent"
@@ -35,7 +98,9 @@
                 android:drawableStart="@drawable/email"
                 android:padding="4dp"
                 />
+-->
 
+<!--
             <EditText
                 android:id="@+id/signUp_password"
                 android:layout_width="match_parent"
@@ -49,20 +114,22 @@
                 android:drawableStart="@drawable/password"
                 android:padding="4dp"
                 />
+-->
 
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/create_account"
-                android:layout_below="@+id/signUp_password"
-                android:padding="2dp"
+                android:layout_below="@+id/Password_filed"
                 android:layout_marginTop="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginLeft="@dimen/dp_thirty"
+                android:layout_marginRight="@dimen/dp_thirty"
+                android:backgroundTint="@color/home_title_color"
                 android:textSize="24dp"
+                android:textAllCaps="false"
                 android:textColor="#ffffff"
                 android:text="Create Account"
-                android:background="@color/colorPrimary"
+                android:background="@drawable/button_background"
                 ></Button>
 
             <TextView
@@ -71,11 +138,12 @@
                 android:id="@+id/Already_have_account"
                 android:layout_below="@+id/create_account"
                 android:layout_marginTop="1dp"
-                android:textSize="20dp"
+                android:textSize="18dp"
+                android:textColor="@color/black"
                 android:layout_marginEnd="20dp"
                 android:textAlignment="center"
                 android:textStyle="bold"
-                android:text="Already have an account"
+                android:text="Already have an account "
                 ></TextView>
         </RelativeLayout>
     </ScrollView>/

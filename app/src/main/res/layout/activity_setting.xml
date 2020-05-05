@@ -4,74 +4,117 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient"
     tools:context=".SettingActivity">
-    <include
-        layout="@layout/app_bar_layout"
-        android:id="@+id/setting_toolbar"
-        />
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:layout_below="@+id/setting_toolbar"
-        android:layout_marginTop="80dp"
-        android:id="@+id/profile_image"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:src="@drawable/profile_image"
-        app:civ_border_width="5dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        app:civ_border_color="@color/colorPrimary"/>
 
-<EditText
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/set_user_name"
-    android:layout_below="@+id/profile_image"
-    android:inputType="textMultiLine"
-    android:hint="Username"
-    android:textStyle="bold"
-    android:background="@drawable/input"
-    android:layout_marginStart="15dp"
-    android:layout_marginEnd="15dp"
-    android:layout_marginTop="10dp"
-    android:drawableStart="@drawable/edit_profile"
-    android:padding="6dp"
-    ></EditText>
-    <EditText
+    <include
+        android:id="@+id/setting_toolbar"
+        layout="@layout/app_bar_layout" />
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/set_Profile_status"
-        android:layout_below="@+id/set_user_name"
-        android:inputType="textMultiLine"
-        android:hint="hey ! i am available now"
-        android:textStyle="bold"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/input"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/_10dp"
+        android:layout_below="@id/setting_toolbar"
+        android:id="@+id/profile_linearlayout"
+        >
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profile_image"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/profile_image"
+            app:civ_border_color="@color/home_title_color"
+            app:civ_border_width="5dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+
+            android:layout_height="wrap_content"
+            android:layout_below="@id/profile_image"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="-50dp"
+            android:layout_marginLeft="250dp"
+            android:src="@drawable/ic_mode_edit_black_24dp"></ImageView>
+    </RelativeLayout>
+    <EditText
+        android:id="@+id/set_user_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/profile_linearlayout"
         android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
         android:layout_marginTop="10dp"
-        android:drawableStart="@drawable/edit_status"
+        android:layout_marginEnd="15dp"
+        android:background="@drawable/input"
+        android:drawableStart="@drawable/edit_profile"
+        android:hint="Username"
+        android:inputType="textMultiLine"
         android:padding="6dp"
-        ></EditText>
+        android:textStyle="bold"></EditText>
+
+    <EditText
+        android:id="@+id/set_Profile_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/set_user_name"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="15dp"
+        android:background="@drawable/input"
+        android:drawableStart="@drawable/edit_status"
+        android:hint="hey ! i am available now"
+        android:inputType="textMultiLine"
+        android:padding="6dp"
+        android:textStyle="bold"></EditText>
 
     <Button
+        android:id="@+id/update_setting_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/update_setting_button"
         android:layout_below="@+id/set_Profile_status"
-        android:inputType="textMultiLine"
-        android:hint="Username"
-        android:text="Update"
-        android:textStyle="bold"
-        android:textColor="@android:color/background_light"
-        android:background="@drawable/button"
         android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
         android:layout_marginTop="10dp"
+        android:layout_marginEnd="15dp"
+        android:background="@drawable/button_background"
+        android:backgroundTint="@color/home_title_color"
+        android:hint="Username"
+        android:inputType="textMultiLine"
         android:padding="6dp"
-        android:textSize="20sp"
+        android:text="Update"
         android:textAllCaps="false"
+        android:textColor="@android:color/background_light"
+        android:textSize="20sp"
+        android:textStyle="bold"
 
         ></Button>
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cvToggle"
+        android:layout_below="@id/update_setting_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/_4dp"
+        app:cardElevation="@dimen/_4dp"
+        app:cardCornerRadius="@dimen/dp_five"
+        app:cardUseCompatPadding="true"
+        android:layout_marginStart="@dimen/_10dp"
+        android:layout_marginEnd="@dimen/_10dp"
+        app:strokeWidth="@dimen/_1dp"
+        android:backgroundTint="@color/home_title_color"
+        android:clipToPadding="false"
+        android:layout_marginBottom="@dimen/dp_eight">
+        <Switch
+            android:id="@+id/switchTransaction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:text="Whatsapp Mode"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_eighteen"
+            android:layout_margin="@dimen/dp_ten"/>
+    </com.google.android.material.card.MaterialCardView>
 
 
 </RelativeLayout>

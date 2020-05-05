@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Wechat</string>
 
@@ -16,6 +17,4 @@
     <string name="cancel">Cancel</string>
     <string name="yes_log_out">Yes log out</string>
     <string name="are_you_sure_you_n_want_to_log_out">Are You Sure You,\n Want To Log Out?</string>
-
-
 </resources>
