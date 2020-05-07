@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Wechat</string>
+    <string name="app_name">Mychat</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -11,11 +11,20 @@
     <string name="twitter_consumer_key" translatable="false">YOUR_CONSUMER_KEY</string>
     <string name="twitter_consumer_secret" translatable="false">YOUR_CONSUMER_SECRET</string>
     <string name="info">Create Group</string>
-    <string name="alert_msg_bt" >Enter your Group Name </string>
+    <string name="alert_msg_bt">Enter your Group Name </string>
     <string name="turn_on_bt">Create</string>
     <string name="cancel">Cancel</string>
     <string name="yes_log_out">Yes log out</string>
     <string name="are_you_sure_you_n_want_to_log_out">Are You Sure You,\n Want To Log Out?</string>
+    <string name="file_browser">File Browser</string>
+    <string name="img">img_</string>
+    <string name="yyyy_mm_dd_hh_mm_ss">yyyyMMdd_HHmmss</string>
+    <string name="jpg">.jpg</string>
+    <string name="photopath">PhotoPath</string>
+    <string name="image_file_creation_failed">Image file creation failed</string>
+    <string name="file">file:</string>
+    <string name="image_chooser">Image Chooser</string>
+
 
 
 </resources>

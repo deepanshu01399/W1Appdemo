@@ -12,5 +12,24 @@
         android:layout_alignParentTop="true"
         android:id="@+id/chat_request_list"
         />
+    <pl.droidsonroids.gif.GifImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:id="@+id/gifareoplane"
+        android:visibility="gone"
+        android:src="@drawable/gifareoplane"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No data to show here"
+        android:gravity="center"
+        android:visibility="gone"
+        android:id="@+id/no_requestMsg"
+        android:textSize="20dp"
+        android:textColor="@color/home_title_color"
+        android:layout_below="@id/gifareoplane"
+        ></TextView>
 
 </RelativeLayout>

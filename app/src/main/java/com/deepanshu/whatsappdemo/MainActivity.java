@@ -83,10 +83,11 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
 
         mToolbar = (Toolbar) findViewById(R.id.main_page_toolbar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("WECHAT");
+        getSupportActionBar().setTitle("MYCHAT");
         myViewPager = (ViewPager) findViewById(R.id.main_tabs_pager);
         myTabsAccessorAdapter = new TabsAccessorAdapter(getSupportFragmentManager());
         myViewPager.setAdapter(myTabsAccessorAdapter);
+        myViewPager.setCurrentItem(1);
         myTabLayout = (TabLayout) findViewById(R.id.main_tabs);
         myTabLayout.setupWithViewPager(myViewPager);
         NoInternetGif = findViewById(R.id.NoInternetGif);

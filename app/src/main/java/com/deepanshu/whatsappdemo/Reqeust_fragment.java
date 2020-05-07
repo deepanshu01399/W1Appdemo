@@ -31,6 +31,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import pl.droidsonroids.gif.GifImageView;
+
+import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 
 /**
@@ -42,6 +45,8 @@ public class Reqeust_fragment extends Fragment {
     private DatabaseReference chatRequestRef, userRef, ContactsRef;
     private FirebaseAuth mAuth;
     private String currentUserId;
+    GifImageView gifImageView;
+    TextView txt_No_requestMsg;
 
     public Reqeust_fragment() {
         // Required empty public constructor
@@ -59,6 +64,8 @@ public class Reqeust_fragment extends Fragment {
         userRef = FirebaseDatabase.getInstance().getReference().child("Users");
         requestFragmentView = inflater.inflate(R.layout.fragment_reqeust_fragment, container, false);
         myRecylerList = (RecyclerView) requestFragmentView.findViewById(R.id.chat_request_list);
+        gifImageView=(GifImageView)requestFragmentView.findViewById(R.id.gifareoplane);
+        txt_No_requestMsg =(TextView) requestFragmentView.findViewById(R.id.no_requestMsg);
         myRecylerList.setLayoutManager(new LinearLayoutManager(getContext()));
 
         return requestFragmentView;
@@ -340,6 +347,13 @@ public class Reqeust_fragment extends Fragment {
 
 
                         }
+                        /*else{//todo tried to used for "having no friend request pending
+                            myRecylerList.setVisibility(View.GONE);
+                            gifImageView.setVisibility(View.VISIBLE);
+                            txt_No_requestMsg.setVisibility(View.VISIBLE);
+
+                        }*/
+
                     }
 
                     @Override
@@ -387,6 +401,7 @@ public class Reqeust_fragment extends Fragment {
         };
         myRecylerList.setAdapter(adapter);
         adapter.startListening();
+
     }
 
     public static class RequestviewHolder extends RecyclerView.ViewHolder {
@@ -407,4 +422,6 @@ public class Reqeust_fragment extends Fragment {
 
         }
     }
+
+
 }
