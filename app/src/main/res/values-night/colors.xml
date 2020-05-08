@@ -15,5 +15,10 @@
     <color name="color_grey">#656565</color>
     <color name="strokeColor">#FABA3F</color>
     <color name="UserTextColor">#1A1919</color>
+    <color name="all_white_color">#ffffff</color>
+    <color name="all_black_color">#1A1919</color>
+    <color name="light_brown">#F3F0F0</color>
+
+
 
 </resources>

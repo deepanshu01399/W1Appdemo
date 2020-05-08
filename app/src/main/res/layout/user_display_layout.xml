@@ -34,7 +34,7 @@
                     android:layout_marginRight="20sp"
                     android:text="User Name"
                     android:textAlignment="textStart"
-                    android:textColor="@color/UserTextColor"
+                    android:textColor="@color/all_black_color"
                     android:textSize="16sp"
                      />
 
