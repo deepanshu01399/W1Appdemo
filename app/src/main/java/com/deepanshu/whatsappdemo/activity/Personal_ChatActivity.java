@@ -294,9 +294,9 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
             rootRef.updateChildren(messageBodyDetails).addOnCompleteListener(new OnCompleteListener() {
                 @Override
                 public void onComplete(@NonNull Task task) {
-                    //if any eerrror occurs
+                    //if no  error occurs
                     if (task.isSuccessful()) {
-                        sendNotification(MessageReceiverId, (String) messageImageBody.get("from"),"this is my message");
+                       // sendNotification(MessageReceiverId, (String) messageImageBody.get("from"),"this is my message");
 
                         Toast.makeText(Personal_ChatActivity.this, "Message Sent Successfully", Toast.LENGTH_SHORT).show();
                         loadingBar.dismiss();
@@ -339,8 +339,9 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         Token token = snapshot.getValue(Token.class);
-                        NotificationData data = new NotificationData(msg, messageSenderId, "notification", "sended", R.mipmap.ic_launcher);
-                        Sender sender = new Sender(token.getToken(), data);
+                        //NotificationData data = new NotificationData(msg, messageSenderId, "notification", "sended", R.mipmap.ic_launcher);
+                        NotificationData data = new NotificationData("this is message", "deepanshu", "notification", "sended", R.mipmap.ic_launcher);
+                        Sender sender = new Sender(token.getToken(),data);
                         apIservice.notificaiton_response(sender).enqueue(new Callback<Notifi_Response>() {
                             @Override
                             public void onResponse(Call<Notifi_Response> call, Response<Notifi_Response> response) {

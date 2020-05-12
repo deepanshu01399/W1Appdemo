@@ -4,6 +4,10 @@ public class NotificationData {
     private String data,user,title,sented;
     private int icons;
 
+    public NotificationData() {
+
+    }
+
     public String getData() {
         return data;
     }

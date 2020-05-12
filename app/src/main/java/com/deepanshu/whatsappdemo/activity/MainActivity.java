@@ -94,7 +94,6 @@ public class MainActivity extends BaseActivity implements ConnectivityReceiver.C
         myTabLayout.setupWithViewPager(myViewPager);
         //myTabLayout.getChildAt(1).getLayoutParams().width = 220;
         myTabLayout.getTabAt(1).getOrCreateBadge().setNumber(2);
-
         myTabLayout.getTabAt(1).getOrCreateBadge().setBadgeTextColor(Color.BLACK);
         myTabLayout.getTabAt(1).getOrCreateBadge().setBackgroundColor(Color.WHITE);
         //myTabLayout.getTabAt(0).setIcon(R.drawable.ic_camera_alt_black_24dp);
@@ -104,7 +103,7 @@ public class MainActivity extends BaseActivity implements ConnectivityReceiver.C
         progressBar = findViewById(R.id.spin_kit);
         //sharedPreferencesFactory= SharedPreferencesFactory.getInstance(this);
         //SharedPreferences sharedPreferences=sharedPreferencesFactory.getSharedPreferences(MODE_PRIVATE);
-        checkConnection();
+        //checkConnection();
         settheme();
 
 

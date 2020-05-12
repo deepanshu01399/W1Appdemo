@@ -13,6 +13,7 @@ import androidx.core.app.NotificationCompat;
 
 import com.deepanshu.whatsappdemo.R;
 import com.deepanshu.whatsappdemo.activity.MainActivity;
+import com.deepanshu.whatsappdemo.model.NotificationData;
 import com.deepanshu.whatsappdemo.model.Token;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -87,15 +88,24 @@ public class FirebaseMessageService extends FirebaseMessagingService {
 
         //Todo send push notification from the postman
         else {
+            String remoteMess=remoteMessage.getData().get("title");
+            String data=remoteMessage.getFrom();
+            String d=remoteMessage.getMessageId();
+            String de=remoteMessage.getData().get("data");
+            String  msg=remoteMessage.getData().get("body");
             Intent intent = new Intent(this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
             builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-                    .setContentTitle(remoteMessage.getData().get(getString(R.string.title)))
-                    .setContentText(remoteMessage.getData().get(getString(R.string.body))).setAutoCancel(true)
+                    /*.setContentTitle(remoteMessage.getData().get("title"))
+            .setContentText(remoteMessage.getData().get("body"))*/
+                    .setContentTitle("new Message ")
+                        .setContentText("New message from  Wechat conversation")
+                    .setAutoCancel(true)
                     .setSmallIcon(R.drawable.ic_textsms_black_24dp)
                     .setContentIntent(pendingIntent);
-            String imageurl = remoteMessage.getData().get(getString(R.string.image));
+            //String imageurl = remoteMessage.getData().get(getString(R.string.image));
+            String imageurl="https://images-na.ssl-images-amazon.com/images/I/41NxGNlKzwL.png";
             if (imageurl != null) {
                 bitmap = getBitmapfromUrl(imageurl);
             }
