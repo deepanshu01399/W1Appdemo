@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
@@ -26,6 +27,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.deepanshu.whatsappdemo.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +42,7 @@ import static android.app.Activity.RESULT_OK;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CameraFragment extends Fragment {
+public class CameraFragment extends Fragment implements View.OnClickListener {
     private String mCM;
     private ValueCallback<Uri> mUploadMsg;
     private ValueCallback<Uri[]> mUploadMsgArray;
@@ -52,6 +56,7 @@ public class CameraFragment extends Fragment {
     Intent[] intentArray;
     View fragment_camera;
     Button ImageCLICK;
+    FloatingActionButton floatingActionButton;
 
     public CameraFragment() {
         // Required empty public constructor
@@ -69,15 +74,11 @@ public class CameraFragment extends Fragment {
     }
 
     private void initializationfields() {
-        ImageCLICK=fragment_camera.findViewById(R.id.ImageCLICK);
+        ImageCLICK = fragment_camera.findViewById(R.id.ImageCLICK);
         imageView = fragment_camera.findViewById(R.id.clickImage);
-        ImageCLICK.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CheckConditionsForCamera();
-
-            }
-        });
+        floatingActionButton=fragment_camera.findViewById(R.id.scanningFab);
+        ImageCLICK.setOnClickListener(this);
+        floatingActionButton.setOnClickListener(this);
 
 
     }
@@ -105,13 +106,11 @@ public class CameraFragment extends Fragment {
                 takepic.putExtra(MediaStore.EXTRA_OUTPUT, photUri);
                 startActivityForResult(takepic, 1);
             }
-        }
-        else {
+        } else {
             Toast.makeText(getContext(), "pic not capture", Toast.LENGTH_SHORT).show();
         }
 
     }
-
 
 
     private void openFileManagerAfterPermissionAllowed() {
@@ -227,7 +226,21 @@ public class CameraFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
+        IntentResult result1 = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if(result1 != null) {
+            if(result1.getContents() == null) {
+                Toast.makeText(getContext(), "Cancelled", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(getContext(), "result :" +result1.getContents(), Toast.LENGTH_SHORT).show();
+                String barcode = intent.getStringExtra("Barcode");
+                Toast.makeText(getContext(),"\n barcode : "+barcode,Toast.LENGTH_LONG).show();
+                // webViewBrowser.evaluateJavascript("javascript: "+ result.getContents() + "\")", null);
+            }
+        }else  {
+            super.onActivityResult(requestCode, resultCode, intent);
+        }
+
+        //for uploading the files /document
         if (Build.VERSION.SDK_INT >= 21) {
             Uri[] results = null;
             //Check if response is positive
@@ -274,6 +287,33 @@ public class CameraFragment extends Fragment {
                 }
             }
 
-            }
+        }
 
-}}
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.ImageCLICK:
+                CheckConditionsForCamera();
+                break;
+            case R.id.scanningFab:
+                startBarScanning();
+                break;
+        }
+    }
+
+    private void startBarScanning() {
+            IntentIntegrator intentIntegrator = new IntentIntegrator(getActivity());
+            intentIntegrator.setOrientationLocked(true);
+            intentIntegrator.initiateScan();
+//                Intent intent=new Intent(this, ZXingScannerView.class);
+//                startActivity(intent);
+//                startActivityForResult(intent,SCAN_REQUEST_CODE);
+        }
+
+
+
+
+
+}

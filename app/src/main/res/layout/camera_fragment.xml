@@ -14,6 +14,19 @@
         android:layout_margin="40dp"
         android:backgroundTint="@color/home_title_color"
         android:text="CLick Image"></Button>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/scanningFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:visibility="gone"
+        android:src="@android:drawable/ic_dialog_email"
+        android:layout_marginTop="114dp"
+        android:layout_alignParentBottom="true"
+        android:backgroundTint="@color/green"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="@dimen/_12dp"
+        android:layout_marginRight="@dimen/_12dp"/>
 
     <ImageView
         android:id="@+id/clickImage"

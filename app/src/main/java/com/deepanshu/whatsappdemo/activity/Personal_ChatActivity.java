@@ -9,6 +9,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -27,10 +28,17 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.deepanshu.whatsappdemo.interfaces.APIservice;
+import com.deepanshu.whatsappdemo.model.Client;
 import com.deepanshu.whatsappdemo.model.Messages;
 import com.deepanshu.whatsappdemo.adapter.MessagesAdapter;
 import com.deepanshu.whatsappdemo.R;
 import com.deepanshu.whatsappdemo.extraUtil.SharedPreferencesFactory;
+import com.deepanshu.whatsappdemo.model.Notifi_Response;
+import com.deepanshu.whatsappdemo.model.NotificationData;
+import com.deepanshu.whatsappdemo.model.Sender;
+import com.deepanshu.whatsappdemo.model.Token;
+import com.firebase.ui.auth.data.model.User;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -40,9 +48,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
+import com.google.protobuf.Api;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -54,6 +66,9 @@ import java.util.Locale;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.deepanshu.whatsappdemo.activity.MainActivity.ONLINE_STATUS;
 
@@ -66,7 +81,7 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
     private ImageButton SendMessageBotton, google_mic, attachFile;
     private EditText MessageInputText;
     private FirebaseAuth mAuth;
-    private DatabaseReference rootRef;
+    private DatabaseReference rootRef, notifyrootref;
     private final List<Messages> personalMsgList = new ArrayList<>();
     private MessagesAdapter messagesAdapter;
     private RecyclerView userMessageList;
@@ -80,7 +95,9 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
     private ImageButton backImage;
     SharedPreferencesFactory sharedPreferencesFactory = null;
     String saveCurrentTime, saveCurrentDate;
-
+    FirebaseMessagingService firebaseMessagingService;
+    APIservice apIservice;
+    Boolean notify = false;
 
 
     @Override
@@ -94,6 +111,8 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
         mAuth = FirebaseAuth.getInstance();
         messageSenderId = mAuth.getCurrentUser().getUid();
         rootRef = FirebaseDatabase.getInstance().getReference();
+
+        apIservice = Client.getClient("https://fcm.googleapis.com/").create(APIservice.class);
 
 
         ActionBar actionBar = getSupportActionBar();
@@ -252,15 +271,15 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
         //todo start messaging sending and receiver
         if (TextUtils.isEmpty(messageText)) {
             Toast.makeText(this, "First write your message", Toast.LENGTH_SHORT).show();
-        }
-        else {
+        } else {
+            notify = true;
             final String messageSenderRef = "Messages/" + messageSenderId + "/" + MessageReceiverId;
             final String messageReceiverRef = "Messages/" + MessageReceiverId + "/" + messageSenderId;
             DatabaseReference userMessageKeyRef = rootRef.child("Messages").child(messageSenderId)
                     .child(MessageReceiverId).push();
             final String messagePushId = userMessageKeyRef.getKey();///to create pushid
 
-            Map messageImageBody = new HashMap();
+            final Map messageImageBody = new HashMap();
             messageImageBody.put("message", messageText);
             messageImageBody.put("type", "text");
             messageImageBody.put("from", messageSenderId);
@@ -277,14 +296,80 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
                 public void onComplete(@NonNull Task task) {
                     //if any eerrror occurs
                     if (task.isSuccessful()) {
+                        sendNotification(MessageReceiverId, (String) messageImageBody.get("from"),"this is my message");
+
                         Toast.makeText(Personal_ChatActivity.this, "Message Sent Successfully", Toast.LENGTH_SHORT).show();
                         loadingBar.dismiss();
+                        notify=true;
+
                     } else
                         Toast.makeText(Personal_ChatActivity.this, "Message is not sent", Toast.LENGTH_SHORT).show();
                 }
             });
+            final String msg = messageText;
+            //rootRef.child("Messages").child(messageSenderId).child(MessageReceiverId).addChildEventListener(new ChildEventListener() {
+            //rootRef = FirebaseDatabase.getInstance().getReference();
+
+            notifyrootref = FirebaseDatabase.getInstance().getReference("Users").child(messageSenderId);
+            notifyrootref.addValueEventListener(new ValueEventListener() {
+                @SuppressLint("RestrictedApi")
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Messages personalMsg = dataSnapshot.getValue(Messages.class);
+                    if (notify) {
+                        sendNotification(MessageReceiverId, personalMsg.getFrom(), msg);
+                    }
+                    notify = false;
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
 
         }
+    }
+
+    private void sendNotification(String messageReceiverId,  String name, final String msg) {
+        DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
+        Query query = tokens.orderByKey().equalTo(messageReceiverId);
+            query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Token token = snapshot.getValue(Token.class);
+                        NotificationData data = new NotificationData(msg, messageSenderId, "notification", "sended", R.mipmap.ic_launcher);
+                        Sender sender = new Sender(token.getToken(), data);
+                        apIservice.notificaiton_response(sender).enqueue(new Callback<Notifi_Response>() {
+                            @Override
+                            public void onResponse(Call<Notifi_Response> call, Response<Notifi_Response> response) {
+                                if (response.code() == 200) {
+                                    if (response.isSuccessful()) {
+                                        Toast.makeText(getApplicationContext(), "Successful sent", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "Not send notification", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Notifi_Response> call, Throwable t) {
+
+                            }
+                        });
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+
     }
 
     private void googleSpeakToTextTask() {
@@ -400,7 +485,7 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
         attachFile = (ImageButton) findViewById(R.id.send_pic);
         google_mic = (ImageButton) findViewById(R.id.google_mike);
         SendMessageBotton = (ImageButton) findViewById(R.id.send_message_btn);
-        messagesAdapter = new MessagesAdapter(personalMsgList,this);
+        messagesAdapter = new MessagesAdapter(personalMsgList, this);
         userMessageList = (RecyclerView) findViewById(R.id.private_messages_list_of_users);
         //current date and time  screen shot is present
     }
@@ -417,8 +502,8 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void longPressOnpersonalChat(Messages messages) {
-        String text=messages.getMessage();
-        Toast.makeText(this, "message: "+text, Toast.LENGTH_SHORT).show();
+        String text = messages.getMessage();
+        Toast.makeText(this, "message: " + text, Toast.LENGTH_SHORT).show();
         final CharSequence options[] = new CharSequence[]{"Delete", "Forword", "Quote"};
         AlertDialog.Builder builder = new AlertDialog.Builder(Personal_ChatActivity.this);
         builder.setTitle("Select Option");
@@ -428,7 +513,7 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
                 if (which == 0) {
 
                     Cheker = "delete";
-                    Toast.makeText(Personal_ChatActivity.this, "Msg: "+Cheker, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Personal_ChatActivity.this, "Msg: " + Cheker, Toast.LENGTH_SHORT).show();
 
                     // Intent intent = new Intent();
                     //intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -437,12 +522,12 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
                 }
                 if (which == 1) {
                     Cheker = "forword";
-                    Toast.makeText(Personal_ChatActivity.this, "Msg: "+Cheker, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Personal_ChatActivity.this, "Msg: " + Cheker, Toast.LENGTH_SHORT).show();
 
                 }
                 if (which == 2) {
                     Cheker = "quote";
-                    Toast.makeText(Personal_ChatActivity.this, "Msg: "+Cheker, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Personal_ChatActivity.this, "Msg: " + Cheker, Toast.LENGTH_SHORT).show();
 
                 }
             }

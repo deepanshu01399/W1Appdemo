@@ -24,7 +24,9 @@
     <string name="image_file_creation_failed">Image file creation failed</string>
     <string name="file">file:</string>
     <string name="image_chooser">Image Chooser</string>
-
+    <string name="title">Title</string>
+    <string name="body">this is body of msg</string>
+    <string name="image">image</string>
 
 
 </resources>

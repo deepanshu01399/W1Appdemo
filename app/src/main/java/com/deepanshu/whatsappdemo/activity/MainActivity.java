@@ -28,6 +28,7 @@ import android.widget.ProgressBar;
 
 import com.deepanshu.whatsappdemo.extraUtil.ColoredSnackbar;
 import com.deepanshu.whatsappdemo.extraUtil.ConnectivityReceiver;
+import com.deepanshu.whatsappdemo.interfaces.BaseInterface;
 import com.deepanshu.whatsappdemo.model.FindFriends;
 import com.deepanshu.whatsappdemo.extraUtil.Myapplication;
 import com.deepanshu.whatsappdemo.R;
@@ -54,7 +55,7 @@ import pl.droidsonroids.gif.GifImageView;
 
 import static com.deepanshu.whatsappdemo.activity.SettingActivity.CHK_STATUS;
 
-public class MainActivity extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener {
+public class MainActivity extends BaseActivity implements ConnectivityReceiver.ConnectivityReceiverListener, BaseInterface {
     public static final String ONLINE_STATUS = null;
     private Toolbar mToolbar;
     private ViewPager myViewPager;
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
     LinearLayout linearLayout;
     SearchView searchView;
     MenuItem myActionMenuItem;
-    SharedPreferencesFactory sharedPreferencesFactory=null;
+    SharedPreferencesFactory sharedPreferencesFactory = null;
     SharedPreferences prefs;
 
 
@@ -175,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         if (currentUser != null) {
-           // sharedPreferencesFactory.writePreferenceValue(ONLINE_STATUS,"offline");
+            // sharedPreferencesFactory.writePreferenceValue(ONLINE_STATUS,"offline");
             Update_UserStatus("offline");
         }
     }
@@ -378,7 +379,7 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
 
     private void checkConnection() {
         boolean isConnected = ConnectivityReceiver.isConnected();
-        showSnack(isConnected);
+        CheckConnectivity( isConnected);
     }
 
     @Override
@@ -389,7 +390,8 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
     }
 
     // Showing the status in Snackbar
-    private void showSnack(boolean isConnected) {
+    @Override
+    public void CheckConnectivity(boolean isConnected) {
         String message;
         int color;
         if (isConnected) {
@@ -436,7 +438,6 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
             buttonNegative.setTextColor(ContextCompat.getColor(this, R.color.red));
             buttonNegative.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
         }
-
     }
 
     /**
@@ -446,6 +447,18 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
 
     @Override
     public void onNetworkConnectionChanged(boolean isConnected) {
-        showSnack(isConnected);
+        CheckConnectivity(isConnected);
     }
+
+    @Override
+    public void showdialog() {
+
+    }
+
+    @Override
+    public void hideDialog() {
+
+    }
+
+
 }

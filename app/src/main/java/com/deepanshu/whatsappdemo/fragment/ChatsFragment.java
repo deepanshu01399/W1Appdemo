@@ -20,14 +20,17 @@ import com.deepanshu.whatsappdemo.activity.Personal_ChatActivity;
 import com.deepanshu.whatsappdemo.model.Contacts;
 import com.deepanshu.whatsappdemo.R;
 import com.deepanshu.whatsappdemo.extraUtil.SharedPreferencesFactory;
+import com.deepanshu.whatsappdemo.model.Token;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -142,6 +145,7 @@ public  ChatsFragment() {
 
                             }
                         });
+                        updateToken(FirebaseInstanceId.getInstance().getToken());
                     }
 
                 };
@@ -149,6 +153,14 @@ public  ChatsFragment() {
         chatsList.setAdapter(adapter);
         adapter.startListening();
                 };
+    private void updateToken(String s) {
+        //Todo this method is used to send the token to server
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference reference=FirebaseDatabase.getInstance().getReference().child("Tokens");
+        Token token=new Token(s);
+        reference.child(firebaseUser.getUid()).setValue(token);
+
+    }
 
 
     public static class ChatsViewHolder extends RecyclerView.ViewHolder{
