@@ -2,6 +2,7 @@ package com.deepanshu.whatsappdemo.activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +18,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.text.TextUtils;
@@ -98,7 +100,11 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
     FirebaseMessagingService firebaseMessagingService;
     APIservice apIservice;
     Boolean notify = false;
-
+    String messagePushId;
+    Map messageBodyDetails;
+    Map messageImageBody;
+    String messageSenderRef;
+    String messageReceiverRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -273,13 +279,13 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
             Toast.makeText(this, "First write your message", Toast.LENGTH_SHORT).show();
         } else {
             notify = true;
-            final String messageSenderRef = "Messages/" + messageSenderId + "/" + MessageReceiverId;
-            final String messageReceiverRef = "Messages/" + MessageReceiverId + "/" + messageSenderId;
+            messageSenderRef = "Messages/" + messageSenderId + "/" + MessageReceiverId;
+            messageReceiverRef= "Messages/" + MessageReceiverId + "/" + messageSenderId;
             DatabaseReference userMessageKeyRef = rootRef.child("Messages").child(messageSenderId)
                     .child(MessageReceiverId).push();
-            final String messagePushId = userMessageKeyRef.getKey();///to create pushid
+            messagePushId= userMessageKeyRef.getKey();///to create pushid
 
-            final Map messageImageBody = new HashMap();
+            messageImageBody= new HashMap();
             messageImageBody.put("message", messageText);
             messageImageBody.put("type", "text");
             messageImageBody.put("from", messageSenderId);
@@ -287,7 +293,7 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
             messageImageBody.put("messageId", messagePushId);
             messageImageBody.put("time", userLastSeenTime);
             messageImageBody.put("date", userLastseenDate);
-            Map messageBodyDetails = new HashMap();
+            messageBodyDetails= new HashMap();
             messageBodyDetails.put(messageSenderRef + "/" + messagePushId, messageImageBody);
             messageBodyDetails.put(messageReceiverRef + "/" + messagePushId, messageImageBody);
 
@@ -514,9 +520,35 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (which == 0) {
-
                     Cheker = "delete";
-                    Toast.makeText(Personal_ChatActivity.this, "Msg: " + Cheker, Toast.LENGTH_SHORT).show();
+                    rootRef.child("Messages").child(messageSenderId).child(MessageReceiverId).child(messagePushId).
+                    removeValue()
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @RequiresApi(api = Build.VERSION_CODES.N)
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            personalMsgList.remove(text);
+                                            messageBodyDetails.remove(messageSenderRef + "/" + messagePushId, messageImageBody);
+                                            messagesAdapter.notifyDataSetChanged();
+                                            rootRef.child("Messages").child(MessageReceiverId).child(messageSenderId).child(messagePushId)
+                                                    .removeValue()
+                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if (task.isSuccessful()) {
+                                                                personalMsgList.remove(text);
+                                                                messageBodyDetails.remove(messageReceiverRef + "/" + messagePushId, messageImageBody);
+                                                                messagesAdapter.notifyDataSetChanged();
+                                                                Toast.makeText(getApplicationContext(), "msg deleted ", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }
+                                                    });
+                                        }
+                                    }
+                                });
+
+
 
                     // Intent intent = new Intent();
                     //intent.setAction(Intent.ACTION_GET_CONTENT);

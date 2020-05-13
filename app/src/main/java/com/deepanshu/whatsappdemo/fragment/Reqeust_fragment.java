@@ -79,8 +79,8 @@ public class Reqeust_fragment extends Fragment {
         userRef = FirebaseDatabase.getInstance().getReference().child("Users");
         requestFragmentView = inflater.inflate(R.layout.reqeust_fragment, container, false);
         myRecylerList = (RecyclerView) requestFragmentView.findViewById(R.id.chat_request_list);
-        gifImageView=(GifImageView)requestFragmentView.findViewById(R.id.gifareoplane);
-        txt_No_requestMsg =(TextView) requestFragmentView.findViewById(R.id.no_requestMsg);
+        gifImageView = (GifImageView) requestFragmentView.findViewById(R.id.gifareoplane);
+        txt_No_requestMsg = (TextView) requestFragmentView.findViewById(R.id.no_requestMsg);
         myRecylerList.setLayoutManager(new LinearLayoutManager(getContext()));
 
         return requestFragmentView;
@@ -95,7 +95,7 @@ public class Reqeust_fragment extends Fragment {
         FirebaseRecyclerAdapter<Contacts, RequestviewHolder> adapter = new FirebaseRecyclerAdapter<Contacts, RequestviewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull final RequestviewHolder holder, int position, @NonNull Contacts model) {
-               // Toast.makeText(getContext(), "adapter", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(getContext(), "adapter", Toast.LENGTH_SHORT).show();
 
                 holder.itemView.findViewById(R.id.user_profile_name).setVisibility(View.INVISIBLE);
                 holder.itemView.findViewById(R.id.user_status).setVisibility(View.INVISIBLE);
@@ -111,9 +111,9 @@ public class Reqeust_fragment extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
-                           // Toast.makeText(getContext(), "datasnapshot exixts", Toast.LENGTH_SHORT).show();
+                            // Toast.makeText(getContext(), "datasnapshot exixts", Toast.LENGTH_SHORT).show();
                             String type = dataSnapshot.getValue().toString();
-                           // Toast.makeText(getContext(), "type: " + type, Toast.LENGTH_SHORT).show();
+                            // Toast.makeText(getContext(), "type: " + type, Toast.LENGTH_SHORT).show();
                             if (type.equals("received")) {
                                 holder.itemView.findViewById(R.id.user_profile_name).setVisibility(View.VISIBLE);
                                 holder.itemView.findViewById(R.id.user_status).setVisibility(View.VISIBLE);
@@ -126,7 +126,7 @@ public class Reqeust_fragment extends Fragment {
                                 userRef.child(list_user_id).addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                       // Toast.makeText(getContext(), "DCreceived", Toast.LENGTH_SHORT).show();
+                                        // Toast.makeText(getContext(), "DCreceived", Toast.LENGTH_SHORT).show();
 
                                         if (dataSnapshot.hasChild("image")) {
 
@@ -230,7 +230,7 @@ public class Reqeust_fragment extends Fragment {
                                             });*/
 
                                             holder.userName.setText(requestUserName);
-                                          //  Toast.makeText(getContext(), "userName" + requestUserName + "\n request_status :" + user_status, Toast.LENGTH_SHORT).show();
+                                            //  Toast.makeText(getContext(), "userName" + requestUserName + "\n request_status :" + user_status, Toast.LENGTH_SHORT).show();
                                             holder.userProfileStatus.setText(user_status);
                                             Picasso.get().load(requestProfileImage).placeholder(R.drawable.profile_image).into(holder.profileImage);
 
@@ -264,7 +264,7 @@ public class Reqeust_fragment extends Fragment {
                                 holder.itemView.findViewById(R.id.user_profile_image).setVisibility(View.VISIBLE);
                                 //holder.itemView.findViewById(R.id.user_online_icon).setVisibility(View.VISIBLE);
                                 holder.itemView.findViewById(R.id.request_accept_btn).setVisibility(View.VISIBLE);
-                                String msg="Want's to Connect you";
+                                String msg = "Want's to Connect you";
 
                                 //holder.itemView.findViewById(R.id.request_cancel_btn).setVisibility(View.VISIBLE);
                                 userRef.child(list_user_id).addValueEventListener(new ValueEventListener() {
@@ -422,50 +422,50 @@ public class Reqeust_fragment extends Fragment {
     }
 
     private void sendNotification(String list_user_id, String requestProfileImage, String msg) {
-            DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
-            Query query = tokens.orderByKey().equalTo(list_user_id);
-            query.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        Token token = snapshot.getValue(Token.class);
-                        //NotificationData data = new NotificationData(msg, messageSenderId, "notification", "sended", R.mipmap.ic_launcher);
-                        NotificationData data = new NotificationData("this is message", "deepanshu", "notification", "sended", R.mipmap.ic_launcher);
-                        Sender sender = new Sender(token.getToken(), data);
-                        apIservice.notificaiton_response(sender).enqueue(new Callback<Notifi_Response>() {
-                            @SuppressLint("RestrictedApi")
-                            @Override
-                            public void onResponse(Call<Notifi_Response> call, Response<Notifi_Response> response) {
-                                if (response.code() == 200) {
-                                    if (response.isSuccessful()) {
-                                        Toast.makeText(getApplicationContext(), "Request sent Successfull ", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        Toast.makeText(getApplicationContext(), "Request Not sent Successfull", Toast.LENGTH_SHORT).show();
-                                    }
-
+        DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
+        Query query = tokens.orderByKey().equalTo(list_user_id);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Token token = snapshot.getValue(Token.class);
+                    //NotificationData data = new NotificationData(msg, messageSenderId, "notification", "sended", R.mipmap.ic_launcher);
+                    NotificationData data = new NotificationData("this is message", "deepanshu", "notification", "sended", R.mipmap.ic_launcher);
+                    Sender sender = new Sender(token.getToken(), data);
+                    apIservice.notificaiton_response(sender).enqueue(new Callback<Notifi_Response>() {
+                        @SuppressLint("RestrictedApi")
+                        @Override
+                        public void onResponse(Call<Notifi_Response> call, Response<Notifi_Response> response) {
+                            if (response.code() == 200) {
+                                if (response.isSuccessful()) {
+                                    Toast.makeText(getApplicationContext(), "Request sent Successfull ", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "Request Not sent Successfull", Toast.LENGTH_SHORT).show();
                                 }
-                            }
-
-                            @Override
-                            public void onFailure(Call<Notifi_Response> call, Throwable t) {
 
                             }
-                        });
-                    }
+                        }
 
+                        @Override
+                        public void onFailure(Call<Notifi_Response> call, Throwable t) {
+
+                        }
+                    });
                 }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
 
-                }
-            });
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
 
-        }
+    }
 
 
-        public static class RequestviewHolder extends RecyclerView.ViewHolder {
+    public static class RequestviewHolder extends RecyclerView.ViewHolder {
         TextView userName, userProfileStatus;
         CircleImageView profileImage;
         ImageView online_icon;
