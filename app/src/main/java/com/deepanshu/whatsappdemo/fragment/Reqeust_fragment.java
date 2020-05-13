@@ -1,6 +1,7 @@
 package com.deepanshu.whatsappdemo.fragment;
 
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -17,8 +18,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.deepanshu.whatsappdemo.interfaces.APIservice;
+import com.deepanshu.whatsappdemo.model.Client;
 import com.deepanshu.whatsappdemo.model.Contacts;
 import com.deepanshu.whatsappdemo.R;
+import com.deepanshu.whatsappdemo.model.Notifi_Response;
+import com.deepanshu.whatsappdemo.model.NotificationData;
+import com.deepanshu.whatsappdemo.model.Sender;
+import com.deepanshu.whatsappdemo.model.Token;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -28,11 +35,17 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import pl.droidsonroids.gif.GifImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 
 /**
@@ -45,6 +58,8 @@ public class Reqeust_fragment extends Fragment {
     private FirebaseAuth mAuth;
     private String currentUserId;
     GifImageView gifImageView;
+    APIservice apIservice;
+
     TextView txt_No_requestMsg;
 
     public Reqeust_fragment() {
@@ -58,6 +73,7 @@ public class Reqeust_fragment extends Fragment {
         // Inflate the layout for this fragment
         chatRequestRef = FirebaseDatabase.getInstance().getReference().child("Chat Requests");
         mAuth = FirebaseAuth.getInstance();
+        apIservice = Client.getClient("https://fcm.googleapis.com/").create(APIservice.class);
         currentUserId = mAuth.getCurrentUser().getUid();
         ContactsRef = FirebaseDatabase.getInstance().getReference().child("Contacts");
         userRef = FirebaseDatabase.getInstance().getReference().child("Users");
@@ -106,7 +122,7 @@ public class Reqeust_fragment extends Fragment {
                                 holder.itemView.findViewById(R.id.request_accept_btn).setVisibility(View.VISIBLE);
                                 holder.itemView.findViewById(R.id.request_cancel_btn).setVisibility(View.VISIBLE);
 
-                                Toast.makeText(getContext(), "received", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(getContext(), "received", Toast.LENGTH_SHORT).show();
                                 userRef.child(list_user_id).addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -117,6 +133,7 @@ public class Reqeust_fragment extends Fragment {
                                             final String requestUserName = dataSnapshot.child("name").getValue().toString();
                                             final String user_status = dataSnapshot.child("status").getValue().toString();
                                             final String requestProfileImage = dataSnapshot.child("image").toString();
+
                                             holder.AcceptButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
@@ -247,6 +264,7 @@ public class Reqeust_fragment extends Fragment {
                                 holder.itemView.findViewById(R.id.user_profile_image).setVisibility(View.VISIBLE);
                                 //holder.itemView.findViewById(R.id.user_online_icon).setVisibility(View.VISIBLE);
                                 holder.itemView.findViewById(R.id.request_accept_btn).setVisibility(View.VISIBLE);
+                                String msg="Want's to Connect you";
 
                                 //holder.itemView.findViewById(R.id.request_cancel_btn).setVisibility(View.VISIBLE);
                                 userRef.child(list_user_id).addValueEventListener(new ValueEventListener() {
@@ -261,7 +279,7 @@ public class Reqeust_fragment extends Fragment {
                                             holder.AcceptButton.setBackgroundColor(Color.parseColor("#ffff4444"));
                                             holder.AcceptButton.setText("  Cancel sent request  ");
                                             holder.AcceptButton.setTextColor(Color.parseColor("#FFFFFFFF"));
-
+                                            sendNotification(list_user_id, requestProfileImage, msg);
                                             Picasso.get().load(requestProfileImage).placeholder(R.drawable.profile_image).into(holder.profileImage);
                                             holder.AcceptButton.setOnClickListener(new View.OnClickListener() {
 
@@ -403,7 +421,51 @@ public class Reqeust_fragment extends Fragment {
 
     }
 
-    public static class RequestviewHolder extends RecyclerView.ViewHolder {
+    private void sendNotification(String list_user_id, String requestProfileImage, String msg) {
+            DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
+            Query query = tokens.orderByKey().equalTo(list_user_id);
+            query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Token token = snapshot.getValue(Token.class);
+                        //NotificationData data = new NotificationData(msg, messageSenderId, "notification", "sended", R.mipmap.ic_launcher);
+                        NotificationData data = new NotificationData("this is message", "deepanshu", "notification", "sended", R.mipmap.ic_launcher);
+                        Sender sender = new Sender(token.getToken(), data);
+                        apIservice.notificaiton_response(sender).enqueue(new Callback<Notifi_Response>() {
+                            @SuppressLint("RestrictedApi")
+                            @Override
+                            public void onResponse(Call<Notifi_Response> call, Response<Notifi_Response> response) {
+                                if (response.code() == 200) {
+                                    if (response.isSuccessful()) {
+                                        Toast.makeText(getApplicationContext(), "Request sent Successfull ", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "Request Not sent Successfull", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Notifi_Response> call, Throwable t) {
+
+                            }
+                        });
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+
+        }
+
+
+        public static class RequestviewHolder extends RecyclerView.ViewHolder {
         TextView userName, userProfileStatus;
         CircleImageView profileImage;
         ImageView online_icon;

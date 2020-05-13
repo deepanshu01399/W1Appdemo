@@ -220,10 +220,10 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
     @Override
     protected void onStart() {
         super.onStart();
-        userOnlineState=getIntent().getExtras().get("state").toString();
+        userOnlineState = getIntent().getExtras().get("state").toString();
         sharedPreferencesFactory = SharedPreferencesFactory.getInstance(this);
         SharedPreferences prefs = sharedPreferencesFactory.getSharedPreferences(MODE_PRIVATE);
-        sharedPreferencesFactory.writePreferenceValue(ONLINE_STATUS,userOnlineState);
+        sharedPreferencesFactory.writePreferenceValue(ONLINE_STATUS, userOnlineState);
         String online_status = sharedPreferencesFactory.getPreferenceValue(ONLINE_STATUS);
         Log.d("online_status", online_status);
         if (sharedPreferencesFactory.getPreferenceValue(ONLINE_STATUS) != null) {
@@ -243,7 +243,7 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
         String messageText = MessageInputText.getText().toString();
         MessageInputText.setText("");
         userOnlineState = getIntent().getExtras().get("state").toString();
-        sharedPreferencesFactory.writePreferenceValue(ONLINE_STATUS,userOnlineState);
+        sharedPreferencesFactory.writePreferenceValue(ONLINE_STATUS, userOnlineState);
         sharedPreferencesFactory = SharedPreferencesFactory.getInstance(this);
         SharedPreferences prefs = sharedPreferencesFactory.getSharedPreferences(MODE_PRIVATE);
         String online_status = sharedPreferencesFactory.getPreferenceValue(ONLINE_STATUS);
@@ -256,8 +256,8 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
         saveCurrentTime = currentTime.format(calendar.getTime());
 
         if (sharedPreferencesFactory.getPreferenceValue(ONLINE_STATUS) != null) {
-            userLastseenDate=saveCurrentDate;
-            userLastSeenTime=saveCurrentTime;
+            userLastseenDate = saveCurrentDate;
+            userLastSeenTime = saveCurrentTime;
 
             if (sharedPreferencesFactory.getPreferenceValue(ONLINE_STATUS).equalsIgnoreCase("online")) {
                 // if(userOnlineState.equalsIgnoreCase("online"))
@@ -296,11 +296,11 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
                 public void onComplete(@NonNull Task task) {
                     //if no  error occurs
                     if (task.isSuccessful()) {
-                       // sendNotification(MessageReceiverId, (String) messageImageBody.get("from"),"this is my message");
+                        // sendNotification(MessageReceiverId, (String) messageImageBody.get("from"),"this is my message");
 
                         Toast.makeText(Personal_ChatActivity.this, "Message Sent Successfully", Toast.LENGTH_SHORT).show();
                         loadingBar.dismiss();
-                        notify=true;
+                        notify = true;
 
                     } else
                         Toast.makeText(Personal_ChatActivity.this, "Message is not sent", Toast.LENGTH_SHORT).show();
@@ -309,66 +309,68 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
             final String msg = messageText;
             //rootRef.child("Messages").child(messageSenderId).child(MessageReceiverId).addChildEventListener(new ChildEventListener() {
             //rootRef = FirebaseDatabase.getInstance().getReference();
-
-            notifyrootref = FirebaseDatabase.getInstance().getReference("Users").child(messageSenderId);
-            notifyrootref.addValueEventListener(new ValueEventListener() {
-                @SuppressLint("RestrictedApi")
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    Messages personalMsg = dataSnapshot.getValue(Messages.class);
-                    if (notify) {
-                        sendNotification(MessageReceiverId, personalMsg.getFrom(), msg);
+            if (!sharedPreferencesFactory.getPreferenceValue(ONLINE_STATUS).equalsIgnoreCase("online")) {
+                //todo send notification only when user was offline
+                notifyrootref = FirebaseDatabase.getInstance().getReference("Users").child(messageSenderId);
+                notifyrootref.addValueEventListener(new ValueEventListener() {
+                    @SuppressLint("RestrictedApi")
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Messages personalMsg = dataSnapshot.getValue(Messages.class);
+                        if (notify) {
+                            sendNotification(MessageReceiverId, personalMsg.getFrom(), msg);
+                        }
+                        notify = false;
                     }
-                    notify = false;
-                }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                }
-            });
+                    }
+                });
 
+            }
         }
     }
 
-    private void sendNotification(String messageReceiverId,  String name, final String msg) {
+    private void sendNotification(String messageReceiverId, String name, final String msg) {
         DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
         Query query = tokens.orderByKey().equalTo(messageReceiverId);
-            query.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        Token token = snapshot.getValue(Token.class);
-                        //NotificationData data = new NotificationData(msg, messageSenderId, "notification", "sended", R.mipmap.ic_launcher);
-                        NotificationData data = new NotificationData("this is message", "deepanshu", "notification", "sended", R.mipmap.ic_launcher);
-                        Sender sender = new Sender(token.getToken(),data);
-                        apIservice.notificaiton_response(sender).enqueue(new Callback<Notifi_Response>() {
-                            @Override
-                            public void onResponse(Call<Notifi_Response> call, Response<Notifi_Response> response) {
-                                if (response.code() == 200) {
-                                    if (response.isSuccessful()) {
-                                        Toast.makeText(getApplicationContext(), "Successful sent", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        Toast.makeText(getApplicationContext(), "Not send notification", Toast.LENGTH_SHORT).show();
-                                    }
-
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Token token = snapshot.getValue(Token.class);
+                    //NotificationData data = new NotificationData(msg, messageSenderId, "notification", "sended", R.mipmap.ic_launcher);
+                    NotificationData data = new NotificationData("this is message", "deepanshu", "notification", "sended", R.mipmap.ic_launcher);
+                    Sender sender = new Sender(token.getToken(), data);
+                    apIservice.notificaiton_response(sender).enqueue(new Callback<Notifi_Response>() {
+                        @Override
+                        public void onResponse(Call<Notifi_Response> call, Response<Notifi_Response> response) {
+                            if (response.code() == 200) {
+                                if (response.isSuccessful()) {
+                                    Toast.makeText(getApplicationContext(), "Successful sent", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "Not send notification", Toast.LENGTH_SHORT).show();
                                 }
-                            }
-
-                            @Override
-                            public void onFailure(Call<Notifi_Response> call, Throwable t) {
 
                             }
-                        });
-                    }
+                        }
 
+                        @Override
+                        public void onFailure(Call<Notifi_Response> call, Throwable t) {
+
+                        }
+                    });
                 }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
 
-                }
-            });
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
 
     }
