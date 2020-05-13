@@ -1,5 +1,6 @@
 package com.deepanshu.whatsappdemo.adapter;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,11 +30,13 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
     private List<Messages> userPersonalMsgList;
     private FirebaseAuth mAuth;
     private DatabaseReference userRef;
+    private int selected_msg;
+
     IPersonalchat iPersonalchat;
 
-    public MessagesAdapter(List<Messages> userPersonalMsgList,IPersonalchat iPersonalchat) {
+    public MessagesAdapter(List<Messages> userPersonalMsgList, IPersonalchat iPersonalchat) {
         this.userPersonalMsgList = userPersonalMsgList;
-        this.iPersonalchat=iPersonalchat;
+        this.iPersonalchat = iPersonalchat;
 
     }
 
@@ -47,6 +50,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
 
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(@NonNull final MessageViewHolder holder, int position) {
         String messageSenderId = mAuth.getCurrentUser().getUid();
@@ -77,10 +81,13 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
         holder.senderimageLayout.setVisibility(View.GONE);
 
 
-
         if (fromUserId.equals(messageSenderId)) {
 
             if (fromMessageType.equalsIgnoreCase("text")) {
+                /*if (selected_msg == position) {
+                    holder.senderMessageText.setTextColor(R.color.home_title_color);
+                    holder.sender_time_text.setTextColor(R.color.home_title_color);
+                }*/
                 holder.senderMsgImage.setMaxHeight(0);
                 // holder.senderMsgImage.setVisibility(View.INVISIBLE);
                 holder.senderMessageText.setVisibility(View.VISIBLE);
@@ -90,26 +97,54 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                 holder.senderMessageText.setTextColor(Color.BLACK);
                 holder.senderMessageText.setText(personalMsg.getMessage());
                 holder.sender_time_text.setText(personalMsg.getTime());
+                holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        iPersonalchat.longPressOnMsgFromSender(userPersonalMsgList.get(position));
+                        return true;
+                    }
+                });
 
             } else {
+                //if(selected_msg==position)
+                 //   holder.senderimageLayout.setBackgroundColor(R.color.home_title_color);
                 holder.senderimageLayout.setVisibility(View.VISIBLE);
+                /*holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        iPersonalchat.longPressOnpersonalChat(userPersonalMsgList.get(position));
+                            return true;
+                        };
+                });*/
                 Picasso.get().load(personalMsg.getMessage()).into(holder.senderMsgImage);
             }
-        }
-
-        else {
+        } else {
             holder.recieverProfileImage.setVisibility(View.VISIBLE);
             holder.sender_msg_layout.setVisibility(View.GONE);
             if (fromMessageType.equalsIgnoreCase("text")) {
                 holder.receiverMessageText.setVisibility(View.VISIBLE);
+                /*if (selected_msg == position) {
+                    holder.receiverMessageText.setTextColor(R.color.home_title_color);
+                    holder.receiver_msg_time.setTextColor(R.color.home_title_color);
+                }*/
                 holder.reciverMsgLayout.setVisibility(View.VISIBLE);
                 holder.receiverMessageText.setBackgroundResource(R.drawable.recievermsglayout);
                 holder.receiverMessageText.setTextColor(Color.BLACK);
                 holder.receiverMessageText.setText(personalMsg.getMessage());
                 holder.receiver_msg_time.setText(personalMsg.getTime());
+                holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        iPersonalchat.lognPressOnMsgFromReceiver(userPersonalMsgList.get(position));
+                        return true;
+                    }
+                });
             } else if (fromMessageType.equalsIgnoreCase("image")) {
+                //if (selected_msg == position)
+                //    holder.receiverImageLayout.setBackgroundColor(R.color.home_title_color);
                 holder.receiverImageLayout.setVisibility(View.VISIBLE);
                 Picasso.get().load(personalMsg.getMessage()).into(holder.receicerMsgImage);
+
 
             }
         }
@@ -123,39 +158,43 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
     }
 
     public class MessageViewHolder extends RecyclerView.ViewHolder {
-        public TextView senderMessageText, receiverMessageText,receiver_msg_time,sender_time_text;
+        public TextView senderMessageText, receiverMessageText, receiver_msg_time, sender_time_text;
         public CircleImageView recieverProfileImage;
         public ImageView senderMsgImage, receicerMsgImage;
-        private  LinearLayout senderimageLayout,receiverImageLayout,reciverMsgLayout,sender_msg_layout;
+        public View itemView;
+        private LinearLayout senderimageLayout, receiverImageLayout, reciverMsgLayout, sender_msg_layout;
 
         public MessageViewHolder(@NonNull View itemView) {
 
             super(itemView);
+            this.itemView=itemView;
             senderMessageText = (TextView) itemView.findViewById(R.id.sender_msg_text);
             receiverMessageText = (TextView) itemView.findViewById(R.id.receiver_msg_text);
             recieverProfileImage = (CircleImageView) itemView.findViewById(R.id.msg_profile_image);
             senderMsgImage = (ImageView) itemView.findViewById(R.id.sender_msg_image);
             receicerMsgImage = (ImageView) itemView.findViewById(R.id.receiver_msg_Image);
-            senderimageLayout=(LinearLayout)itemView.findViewById(R.id.senderImageLayout);
-            receiverImageLayout=itemView.findViewById(R.id.receicreImagelayout);
-            reciverMsgLayout=itemView.findViewById(R.id.reciverLayout);
-            receiver_msg_time=itemView.findViewById(R.id.receiver_msg_time);
-            sender_time_text=itemView.findViewById(R.id.sender_time_text);
-            sender_msg_layout=itemView.findViewById(R.id.sender_msg_layout);
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            senderimageLayout = (LinearLayout) itemView.findViewById(R.id.senderImageLayout);
+            receiverImageLayout = itemView.findViewById(R.id.receicreImagelayout);
+            reciverMsgLayout = itemView.findViewById(R.id.reciverLayout);
+            receiver_msg_time = itemView.findViewById(R.id.receiver_msg_time);
+            sender_time_text = itemView.findViewById(R.id.sender_time_text);
+            sender_msg_layout = itemView.findViewById(R.id.sender_msg_layout);
+            /*itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
+                    selected_msg = getAdapterPosition();
                     iPersonalchat.longPressOnpersonalChat(userPersonalMsgList.get(getAdapterPosition()));
                     return true;
                 }
             });
 
-
+*/
         }
     }
 
-    public interface  IPersonalchat{
-         void longPressOnpersonalChat(Messages messages);
+    public interface IPersonalchat {
+        void longPressOnMsgFromSender(Messages messages);
+        void lognPressOnMsgFromReceiver(Messages messages);
     }
 
 }

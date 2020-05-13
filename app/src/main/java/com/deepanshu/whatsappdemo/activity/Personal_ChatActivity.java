@@ -280,12 +280,12 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
         } else {
             notify = true;
             messageSenderRef = "Messages/" + messageSenderId + "/" + MessageReceiverId;
-            messageReceiverRef= "Messages/" + MessageReceiverId + "/" + messageSenderId;
+            messageReceiverRef = "Messages/" + MessageReceiverId + "/" + messageSenderId;
             DatabaseReference userMessageKeyRef = rootRef.child("Messages").child(messageSenderId)
                     .child(MessageReceiverId).push();
-            messagePushId= userMessageKeyRef.getKey();///to create pushid
+            messagePushId = userMessageKeyRef.getKey();///to create pushid
 
-            messageImageBody= new HashMap();
+            messageImageBody = new HashMap();
             messageImageBody.put("message", messageText);
             messageImageBody.put("type", "text");
             messageImageBody.put("from", messageSenderId);
@@ -293,7 +293,7 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
             messageImageBody.put("messageId", messagePushId);
             messageImageBody.put("time", userLastSeenTime);
             messageImageBody.put("date", userLastseenDate);
-            messageBodyDetails= new HashMap();
+            messageBodyDetails = new HashMap();
             messageBodyDetails.put(messageSenderRef + "/" + messagePushId, messageImageBody);
             messageBodyDetails.put(messageReceiverRef + "/" + messagePushId, messageImageBody);
 
@@ -510,52 +510,58 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
     }
 
     @Override
-    public void longPressOnpersonalChat(Messages messages) {
+    public void longPressOnMsgFromSender(Messages messages) {
         String text = messages.getMessage();
         Toast.makeText(this, "message: " + text, Toast.LENGTH_SHORT).show();
-        final CharSequence options[] = new CharSequence[]{"Delete", "Forword", "Quote"};
+        final CharSequence options[] = new CharSequence[]{"Delete for All", "Delete from me", "Forword", "Quote"};
         AlertDialog.Builder builder = new AlertDialog.Builder(Personal_ChatActivity.this);
         builder.setTitle("Select Option");
         builder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (which == 0) {
-                    Cheker = "delete";
-                    rootRef.child("Messages").child(messageSenderId).child(MessageReceiverId).child(messagePushId).
-                    removeValue()
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @RequiresApi(api = Build.VERSION_CODES.N)
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            personalMsgList.remove(text);
-                                            messageBodyDetails.remove(messageSenderRef + "/" + messagePushId, messageImageBody);
-                                            messagesAdapter.notifyDataSetChanged();
-                                            rootRef.child("Messages").child(MessageReceiverId).child(messageSenderId).child(messagePushId)
-                                                    .removeValue()
-                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                            if (task.isSuccessful()) {
-                                                                personalMsgList.remove(text);
-                                                                messageBodyDetails.remove(messageReceiverRef + "/" + messagePushId, messageImageBody);
-                                                                messagesAdapter.notifyDataSetChanged();
-                                                                Toast.makeText(getApplicationContext(), "msg deleted ", Toast.LENGTH_SHORT).show();
-                                                            }
-                                                        }
-                                                    });
-                                        }
-                                    }
-                                });
-
-
-
+                    Cheker = "Delete for All";
+                    delteMsgfromBothSide();
                     // Intent intent = new Intent();
                     //intent.setAction(Intent.ACTION_GET_CONTENT);
                     //intent.setType("image/*");//this will send the user to the galaery and user selec t the picute
                     //startActivityForResult(intent.createChooser(intent, "Select Image"), 438);
                 }
                 if (which == 1) {
+                    Cheker = "Delete from me";
+                    delteMsgfromMe(messageSenderId, MessageReceiverId);
+                }
+                if (which == 2) {
+                    Cheker = "forword";
+                    Toast.makeText(Personal_ChatActivity.this, "Msg: " + Cheker, Toast.LENGTH_SHORT).show();
+
+                }
+                if (which == 3) {
+                    Cheker = "quote";
+                    Toast.makeText(Personal_ChatActivity.this, "Msg: " + Cheker, Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        });
+        builder.show();
+    }
+
+    @Override
+    public void lognPressOnMsgFromReceiver(Messages messages) {
+        String text = messages.getMessage();
+        Toast.makeText(this, "message: " + text, Toast.LENGTH_SHORT).show();
+        final CharSequence options[] = new CharSequence[]{ "Forword", "Quote"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(Personal_ChatActivity.this);
+        builder.setTitle("Select Option");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                /*if (which == 0) {
+                    Cheker = "Delete for me";
+                    Toast.makeText(firebaseMessagingService, "This feature will be comming soon..", Toast.LENGTH_SHORT).show();
+                    //delteMsgfromMe(MessageReceiverId, messageSenderId);
+                }*/
+                if (which == 0) {
                     Cheker = "forword";
                     Toast.makeText(Personal_ChatActivity.this, "Msg: " + Cheker, Toast.LENGTH_SHORT).show();
 
@@ -568,5 +574,48 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
             }
         });
         builder.show();
+    }
+
+    private void delteMsgfromMe(String from, String to) {
+        rootRef.child("Messages").child(from).child(to).child(messagePushId)
+                .removeValue()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            messageBodyDetails.remove(messageReceiverRef + "/" + messagePushId, messageImageBody);
+                            messagesAdapter.notifyDataSetChanged();
+                            Toast.makeText(getApplicationContext(), "msg deleted  ", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    private void delteMsgfromBothSide() {
+        rootRef.child("Messages").child(messageSenderId).child(MessageReceiverId).child(messagePushId).
+                removeValue()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            messageBodyDetails.remove(messageSenderRef + "/" + messagePushId, messageImageBody);
+                            messagesAdapter.notifyDataSetChanged();
+                            rootRef.child("Messages").child(MessageReceiverId).child(messageSenderId).child(messagePushId)
+                                    .removeValue()
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                messageBodyDetails.remove(messageReceiverRef + "/" + messagePushId, messageImageBody);
+                                                messagesAdapter.notifyDataSetChanged();
+                                                Toast.makeText(getApplicationContext(), "msg deleted ", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                });
     }
 }
