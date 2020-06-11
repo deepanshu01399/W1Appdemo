@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,6 +22,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.text.ClipboardManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -244,6 +246,11 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
 
     private void SendMessage() {
         String messageText = MessageInputText.getText().toString();
@@ -513,7 +520,7 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
     public void longPressOnMsgFromSender(Messages messages) {
         String text = messages.getMessage();
         Toast.makeText(this, "message: " + text, Toast.LENGTH_SHORT).show();
-        final CharSequence options[] = new CharSequence[]{"Delete for All", "Delete from me", "Forword", "Quote"};
+        final CharSequence options[] = new CharSequence[]{"Delete for All", "Delete from me", "Forword", "Quote","Copy"};
         AlertDialog.Builder builder = new AlertDialog.Builder(Personal_ChatActivity.this);
         builder.setTitle("Select Option");
         builder.setItems(options, new DialogInterface.OnClickListener() {
@@ -521,7 +528,7 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
             public void onClick(DialogInterface dialog, int which) {
                 if (which == 0) {
                     Cheker = "Delete for All";
-                    delteMsgfromBothSide();
+                   // delteMsgfromBothSide();
                     // Intent intent = new Intent();
                     //intent.setAction(Intent.ACTION_GET_CONTENT);
                     //intent.setType("image/*");//this will send the user to the galaery and user selec t the picute
@@ -529,7 +536,7 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
                 }
                 if (which == 1) {
                     Cheker = "Delete from me";
-                    delteMsgfromMe(messageSenderId, MessageReceiverId);
+                   // delteMsgfromMe(messageSenderId, MessageReceiverId);
                 }
                 if (which == 2) {
                     Cheker = "forword";
@@ -541,6 +548,11 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
                     Toast.makeText(Personal_ChatActivity.this, "Msg: " + Cheker, Toast.LENGTH_SHORT).show();
 
                 }
+                if(which ==4){
+                    Cheker ="Copy";
+                    copyToClipBoard(text);
+
+                }
             }
         });
         builder.show();
@@ -550,7 +562,7 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
     public void lognPressOnMsgFromReceiver(Messages messages) {
         String text = messages.getMessage();
         Toast.makeText(this, "message: " + text, Toast.LENGTH_SHORT).show();
-        final CharSequence options[] = new CharSequence[]{ "Forword", "Quote"};
+        final CharSequence options[] = new CharSequence[]{"Forword", "Quote","Copy"};
         AlertDialog.Builder builder = new AlertDialog.Builder(Personal_ChatActivity.this);
         builder.setTitle("Select Option");
         builder.setItems(options, new DialogInterface.OnClickListener() {
@@ -566,15 +578,33 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
                     Toast.makeText(Personal_ChatActivity.this, "Msg: " + Cheker, Toast.LENGTH_SHORT).show();
 
                 }
-                if (which == 2) {
+                if (which == 1) {
                     Cheker = "quote";
                     Toast.makeText(Personal_ChatActivity.this, "Msg: " + Cheker, Toast.LENGTH_SHORT).show();
+
+                }
+                if(which ==2){
+                    Cheker ="Copy";
+                    copyToClipBoard(text);
 
                 }
             }
         });
         builder.show();
     }
+
+    private void copyToClipBoard(String text) {
+        int sdk = android.os.Build.VERSION.SDK_INT;
+            if(sdk < android.os.Build.VERSION_CODES.HONEYCOMB) {
+                android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                clipboard.setText(text);
+            } else {
+                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                android.content.ClipData clip = android.content.ClipData.newPlainText("text label",text);
+                clipboard.setPrimaryClip( clip);
+            }
+
+        }
 
     private void delteMsgfromMe(String from, String to) {
         rootRef.child("Messages").child(from).child(to).child(messagePushId)
@@ -592,30 +622,32 @@ public class Personal_ChatActivity extends AppCompatActivity implements View.OnC
                 });
     }
 
+
     private void delteMsgfromBothSide() {
-        rootRef.child("Messages").child(messageSenderId).child(MessageReceiverId).child(messagePushId).
-                removeValue()
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @RequiresApi(api = Build.VERSION_CODES.N)
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            messageBodyDetails.remove(messageSenderRef + "/" + messagePushId, messageImageBody);
-                            messagesAdapter.notifyDataSetChanged();
-                            rootRef.child("Messages").child(MessageReceiverId).child(messageSenderId).child(messagePushId)
-                                    .removeValue()
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                messageBodyDetails.remove(messageReceiverRef + "/" + messagePushId, messageImageBody);
-                                                messagesAdapter.notifyDataSetChanged();
-                                                Toast.makeText(getApplicationContext(), "msg deleted ", Toast.LENGTH_SHORT).show();
+            rootRef.child("Messages").child(messageSenderId).child(MessageReceiverId).child(messagePushId).
+                    removeValue()
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @RequiresApi(api = Build.VERSION_CODES.N)
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                messageBodyDetails.remove(messageSenderRef + "/" + messagePushId, messageImageBody);
+                                messagesAdapter.notifyDataSetChanged();
+                                rootRef.child("Messages").child(MessageReceiverId).child(messageSenderId).child(messagePushId)
+                                        .removeValue()
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    messageBodyDetails.remove(messageReceiverRef + "/" + messagePushId, messageImageBody);
+                                                    messagesAdapter.notifyDataSetChanged();
+                                                    Toast.makeText(getApplicationContext(), "msg deleted ", Toast.LENGTH_SHORT).show();
+                                                }
                                             }
-                                        }
-                                    });
+                                        });
+                            }
                         }
-                    }
-                });
-    }
+                    });
+        }
+
 }

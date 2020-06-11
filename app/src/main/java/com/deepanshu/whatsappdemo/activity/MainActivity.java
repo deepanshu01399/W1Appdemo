@@ -25,6 +25,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.deepanshu.whatsappdemo.extraUtil.ColoredSnackbar;
 import com.deepanshu.whatsappdemo.extraUtil.ConnectivityReceiver;
@@ -308,7 +309,7 @@ public class MainActivity extends BaseActivity implements ConnectivityReceiver.C
             public void onClick(View v) {
                 //if (ConnectivityUtils.isConnected(DeviceListActivity.this)) {
                 dialog.dismiss();
-                final EditText editText = dialog.findViewById(R.id.edtGrpName);
+                final TextView editText = dialog.findViewById(R.id.edtGrpName);
                 String groupName = editText.getText().toString();
                 if (TextUtils.isEmpty(groupName)) {
                     ColoredSnackbar.alert(Snackbar.make(findViewById(android.R.id.content), "please write Group Name", Snackbar.LENGTH_LONG)).show();

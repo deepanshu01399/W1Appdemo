@@ -18,5 +18,9 @@
     <color name="all_white_color">#ffffff</color>
     <color name="all_black_color">#1A1919</color>
     <color name="light_brown">#F3F0F0</color>
+    <color name="transparent">#00000000</color>
+    <color name="google">#d34836</color>
+    <color name="fb">#3b5998</color>
+
 
 </resources>
