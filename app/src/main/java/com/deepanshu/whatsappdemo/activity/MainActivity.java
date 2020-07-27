@@ -75,7 +75,7 @@ public class MainActivity extends BaseActivity implements ConnectivityReceiver.C
     MenuItem myActionMenuItem;
     SharedPreferencesFactory sharedPreferencesFactory = null;
     SharedPreferences prefs;
-
+    String first_name,last_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,11 +140,14 @@ public class MainActivity extends BaseActivity implements ConnectivityReceiver.C
     protected void onStart() {
         super.onStart();
 //when our app start check login or not
+        Intent intent=getIntent();
+        first_name= intent.getStringExtra("first_name");
+        last_name= intent.getStringExtra("last_name");
         FirebaseUser currentUser = mAuth.getCurrentUser();
         // currentUserId=mAuth.getCurrentUser().getUid();//to get the current user id
         Rootref = FirebaseDatabase.getInstance().getReference();
 
-        if (currentUser == null) {
+        if (currentUser == null && first_name==null) {
             progressBar.setVisibility(View.VISIBLE);
             sendUserTOLoginActivity();
         } else {
@@ -182,28 +185,32 @@ public class MainActivity extends BaseActivity implements ConnectivityReceiver.C
     }
 
     private void verifUserExistence() {
-        progressBar.setVisibility(View.VISIBLE);
-        String currentUserId = mAuth.getCurrentUser().getUid();
-        Rootref.child("Users").child(currentUserId).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+        if (first_name != null) {
+            sendUserTOSettingActivity();
+        } else {
 
-                if (dataSnapshot.child("name").exists()) {//check for user name;
-                    progressBar.setVisibility(View.GONE);
-                    //  Toast.makeText(MainActivity.this,"Welcome",Toast.LENGTH_LONG).show();
-                } else {
-                    sendUserTOSettingActivity();
+            progressBar.setVisibility(View.VISIBLE);
+            String currentUserId = mAuth.getCurrentUser().getUid();
+            Rootref.child("Users").child(currentUserId).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    if (dataSnapshot.child("name").exists()) {//check for user name;
+                        progressBar.setVisibility(View.GONE);
+                        //  Toast.makeText(MainActivity.this,"Welcome",Toast.LENGTH_LONG).show();
+                    } else {
+                        sendUserTOSettingActivity();
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
 
+        }
     }
-
     private void sendUserTOLoginActivity() {
         Intent loginIntent = new Intent(MainActivity.this, Login_Activity.class);
         loginIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

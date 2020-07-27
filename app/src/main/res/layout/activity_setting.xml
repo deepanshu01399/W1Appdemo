@@ -10,6 +10,10 @@
     <include
         android:id="@+id/setting_toolbar"
         layout="@layout/app_bar_layout" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -89,7 +93,35 @@
         android:textStyle="bold"
 
         ></Button>
-    <com.google.android.material.card.MaterialCardView
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/mapcard"
+            android:layout_below="@id/update_setting_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="@dimen/_4dp"
+            app:cardElevation="@dimen/_4dp"
+            app:cardCornerRadius="@dimen/dp_five"
+            app:cardUseCompatPadding="true"
+            android:layout_marginStart="@dimen/_10dp"
+            android:layout_marginEnd="@dimen/_10dp"
+            app:strokeWidth="@dimen/_1dp"
+            android:backgroundTint="@color/home_title_color"
+            android:clipToPadding="false"
+            android:layout_marginBottom="@dimen/dp_eight">
+            <TextView
+                android:id="@+id/goto_map_txt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:text="Go to Maps"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_eighteen"
+                android:layout_margin="@dimen/dp_ten"/>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
         android:id="@+id/cvToggle"
         android:layout_below="@id/update_setting_button"
         android:layout_width="match_parent"
@@ -116,5 +148,7 @@
             android:layout_margin="@dimen/dp_ten"/>
     </com.google.android.material.card.MaterialCardView>
 
+
+    </LinearLayout>
 
 </RelativeLayout>

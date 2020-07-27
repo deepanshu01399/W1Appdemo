@@ -18,10 +18,18 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.deepanshu.whatsappdemo.R;
 import com.deepanshu.whatsappdemo.extraUtil.SharedPreferencesFactory;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Continuation;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -62,7 +70,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     SharedPreferencesFactory sharedPreferencesFactory;
     public static final String CHK_STATUS ="STATUS" ;
 
-
+    SupportMapFragment mapFragment;
+    TextView goto_map_txt;
 
 
 
@@ -77,6 +86,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         sharedPreferencesFactory= SharedPreferencesFactory.getInstance(this);
         SharedPreferences sharedPreferences=sharedPreferencesFactory.getSharedPreferences(MODE_PRIVATE);
         switchbtn=findViewById(R.id.switchTransaction);
+        goto_map_txt=findViewById(R.id.goto_map_txt);
         switchbtn.setOnCheckedChangeListener(this);
         setswitchstaus();
         Initialization();
@@ -87,6 +97,13 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onClick(View v) {
                 UpdateSettings();
+            }
+        });
+
+        goto_map_txt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startMapActivity();
             }
         });
 
@@ -110,6 +127,12 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
             }
         });
+    }
+
+    private void startMapActivity() {
+        Intent intent=new Intent(this,MapsActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private void setswitchstaus() {
@@ -363,4 +386,5 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         //finish();
 
     }
+
 }

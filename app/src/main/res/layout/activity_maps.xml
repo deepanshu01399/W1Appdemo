@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.MapsActivity">
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+<!--
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select your country"
+        android:gravity="center_horizontal"
+        android:id="@+id/txt"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/home_title_color"
+        android:textSize="@dimen/_20sp"
+        />
+-->
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cvToggle"
+        android:layout_below="@id/map"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/_4dp"
+        app:cardElevation="@dimen/_4dp"
+        app:cardCornerRadius="@dimen/dp_five"
+        app:cardUseCompatPadding="true"
+        android:layout_marginStart="@dimen/_10dp"
+        android:layout_marginEnd="@dimen/_10dp"
+        app:strokeWidth="@dimen/_1dp"
+        android:clipToPadding="false"
+        android:layout_marginBottom="@dimen/dp_eight">
+        <TextView
+            android:layout_width="match_parent"
+            android:text="Current location is  :"
+            android:textSize="17dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/userLocation"/>
+
+    </com.google.android.material.card.MaterialCardView>
+</FrameLayout>
+
+</RelativeLayout>

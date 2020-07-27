@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient"
-    tools:context=".activity.RegisterActivity">
+    tools:context="com.deepanshu.whatsappdemo.activity.Login_Activity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -209,17 +209,43 @@
                         android:scaleType="centerCrop"
                         app:srcCompat="@drawable/ic_google_plus" />
 
-                    <ImageButton
-                        android:id="@+id/ib_fb_login"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="@color/transparent"
-                        android:scaleType="centerCrop"
-                        app:srcCompat="@drawable/ic_facebook" />
+                    <com.facebook.login.widget.LoginButton
+                        android:id="@+id/fb_login_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="15dp"
+                        android:paddingTop="15dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
                 </LinearLayout>
 <!--
             </androidx.cardview.widget.CardView>
 -->
+
+<!--//it is used for see the details of the facebook login user
+            <Button
+                android:id="@+id/See_login_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/login_using"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginBottom="@dimen/_20sp"
+                android:background="@drawable/button_background"
+                android:backgroundTint="@color/home_title_color"
+                android:drawableStart="@drawable/phone"
+                android:padding="2dp"
+                android:text="Phone"
+                android:textAllCaps="false"
+                android:textColor="#ffffff"
+                android:textSize="24dp"
+
+                ></Button>
+-->
+
         </LinearLayout>
 
     </ScrollView>
