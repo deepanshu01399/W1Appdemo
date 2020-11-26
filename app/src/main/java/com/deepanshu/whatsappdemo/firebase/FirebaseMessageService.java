@@ -55,7 +55,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
         //Todo this method is used to send the token to server
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference reference=FirebaseDatabase.getInstance().getReference().child("Tokens");
-        Token token=new Token(s);
+        Token token=new Token(s);// todo put a firebasebuser getcheck condion
         reference.child(firebaseUser.getUid()).setValue(token);
 
     }

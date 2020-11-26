@@ -93,12 +93,6 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
         Intent takepic = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takepic != null) {
             File photofile = null;
-            // try{
-            //    sharefile=createPhotoFile();
-            //}catch (Exception e)
-            //{
-            //    e.printStackTrace();
-            //}
             photofile = createPhotoFile();
             if (photofile != null) {
                 pathoffile = photofile.getAbsolutePath();

@@ -29,28 +29,54 @@
         />
 -->
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cvToggle"
-        android:layout_below="@id/map"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="@dimen/_4dp"
-        app:cardElevation="@dimen/_4dp"
-        app:cardCornerRadius="@dimen/dp_five"
-        app:cardUseCompatPadding="true"
-        android:layout_marginStart="@dimen/_10dp"
-        android:layout_marginEnd="@dimen/_10dp"
-        app:strokeWidth="@dimen/_1dp"
-        android:clipToPadding="false"
-        android:layout_marginBottom="@dimen/dp_eight">
-        <TextView
-            android:layout_width="match_parent"
-            android:text="Current location is  :"
+        <EditText
+            android:layout_width="270dp"
             android:textSize="17dp"
+            android:textColor="@color/black"
+            android:padding="5dp"
+            android:layout_marginLeft="@dimen/_20sp"
+            android:layout_marginTop="8dp"
+            android:background="@color/white"
+            android:layout_height="wrap_content"
+            android:id="@+id/placeText"/>
+        <Button
+            android:layout_width="@dimen/dp_100"
+            android:text="  Search  "
+            android:layout_marginTop="4dp"
+            android:background="@color/home_title_color"
+            android:layout_gravity="end"
+            android:textColor="@color/white"
             android:layout_height="wrap_content"
             android:id="@+id/userLocation"/>
+   <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:orientation="horizontal">
+    <EditText
+        android:layout_width="270dp"
+        android:textSize="17dp"
+        android:textColor="@color/black"
+        android:padding="5dp"
+        android:layout_gravity="bottom"
+        android:layout_marginLeft="@dimen/_20sp"
+        android:layout_marginTop="8dp"
+        android:hint="Phone no .."
+        android:visibility="gone"
+        android:layout_marginRight="@dimen/_20sp"
+        android:background="@color/white"
+        android:layout_height="wrap_content"
+        android:id="@+id/MobileNO"/>
 
-    </com.google.android.material.card.MaterialCardView>
+    <Button
+        android:layout_width="@dimen/dp_100"
+        android:text="  Share  "
+        android:layout_marginTop="4dp"
+        android:background="@color/home_title_color"
+        android:textColor="@color/white"
+        android:layout_height="wrap_content"
+        android:id="@+id/shareLocationBtn"/>
+   </LinearLayout>
 </FrameLayout>
 
 </RelativeLayout>
