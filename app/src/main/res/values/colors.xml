@@ -21,6 +21,9 @@
     <color name="transparent">#00000000</color>
     <color name="google">#d34836</color>
     <color name="fb">#3b5998</color>
+    <color name="toast_background">#DEEDFF</color>
+    <color name="text_color_toast">#1A4F7F</color>
+    <color name="dim_grey">#A9A9A9</color>
 
 
 </resources>

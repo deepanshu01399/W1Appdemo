@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dp_30"
+    android:background="@drawable/corner_radius"
+    android:layout_gravity="center"
+    android:gravity="center_vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txtStatement"
+            android:layout_width="match_parent"
+            android:padding="@dimen/_10dp"
+            android:text="@string/biometric_alert_dialog_txt"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginLeft="@dimen/_15dp"
+            android:layout_marginTop="@dimen/_15dp"
+            android:layout_marginRight="@dimen/_15dp"
+            android:textColor="@color/home_title_color"
+            android:alpha="0.7"
+            android:textSize="@dimen/_15dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1dp"
+            android:layout_marginTop="@dimen/_15dp"
+            android:background="@color/dim_grey" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_marginBottom="@dimen/_10dp"
+            android:weightSum="10">
+
+            <TextView
+                android:id="@+id/txtNo"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4.9"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="No"
+                android:textStyle="bold"
+                android:textColor="@color/home_title_color"
+                android:textSize="14sp" />
+
+            <View
+                android:layout_width="@dimen/_1dp"
+                android:layout_height="match_parent"
+                android:background="@color/dim_grey" />
+
+            <TextView
+                android:id="@+id/txtYes"
+                android:layout_width="@dimen/_0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4.9"
+                android:padding="5dp"
+                android:gravity="center"
+                android:text="Yes"
+                android:textStyle="bold"
+                android:textColor="@color/home_title_color"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

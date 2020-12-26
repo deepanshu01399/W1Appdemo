@@ -28,4 +28,11 @@
     <string name="body">this is body of msg</string>
     <string name="image">image</string>
     <string name="maps_api_key">AIzaSyAAPmZxYX2-l3OrWTCzWqPAuOpItaH-Z_o</string>
+    <string name="biometric_alert_dialog_txt">Do You want to setup with \"<b>Device Authentication</b>\" to access Your Account?</string>
+    <string name="open_settings_txt">Open Settings</string>
+    <string name="add_finger_print_to_your_device_txt">To enable "Device Authentication" you must add Fingerprint or Face Id first.</string>
+    <color name="shimmer_background">#dddddd</color>
+    <string name="please_scan_your_fingerprint_txt">Please scan your fingerprint once to Activate Device Authentication.</string>
+    <string name="activate_device_authentication_txt">Activate Device Authentication</string>
+
 </resources>

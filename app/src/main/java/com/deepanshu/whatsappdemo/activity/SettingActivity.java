@@ -3,16 +3,23 @@ package com.deepanshu.whatsappdemo.activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -22,7 +29,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.deepanshu.whatsappdemo.R;
+import com.deepanshu.whatsappdemo.custom.MyBottomSheetDialog;
+import com.deepanshu.whatsappdemo.extraUtil.PrefUtil;
 import com.deepanshu.whatsappdemo.extraUtil.SharedPreferencesFactory;
+import com.deepanshu.whatsappdemo.extraUtil.StaticUtil;
+import com.deepanshu.whatsappdemo.fragment.DeviceAuthBottomSheetFragment;
+import com.deepanshu.whatsappdemo.interfaces.BiometricPromptCallBack;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -52,7 +64,7 @@ import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class SettingActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class SettingActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, BiometricPromptCallBack {
     private Button UpdateAccountSettings;
     private EditText userName,userstatus;
     private CircleImageView userProfileImage;
@@ -69,6 +81,9 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     private Switch switchbtn;
     SharedPreferencesFactory sharedPreferencesFactory;
     public static final String CHK_STATUS ="STATUS" ;
+    private Button btnAddFingerPrint;
+    private final Integer REQUESTCODE_SECURITY_SETTINGS = 201;
+    private MyBottomSheetDialog deviceAuthBottomSheetDialog;
 
     SupportMapFragment mapFragment;
     TextView goto_map_txt;
@@ -87,6 +102,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         SharedPreferences sharedPreferences=sharedPreferencesFactory.getSharedPreferences(MODE_PRIVATE);
         switchbtn=findViewById(R.id.switchTransaction);
         goto_map_txt=findViewById(R.id.goto_map_txt);
+        btnAddFingerPrint = findViewById(R.id.btnAddFingerPrint);
+        btnAddFingerPrint.setOnClickListener(this);
         switchbtn.setOnCheckedChangeListener(this);
         setswitchstaus();
         Initialization();
@@ -246,6 +263,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         super.onBackPressed();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -258,10 +276,21 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                     .start(this);
 
         }
+        if(requestCode == REQUESTCODE_SECURITY_SETTINGS && StaticUtil.hasFingerPrintAdded(this)){
+            sharedPreferencesFactory = SharedPreferencesFactory.getInstance(SettingActivity.this);
+            sharedPreferencesFactory.writePreferenceBoolValue(PrefUtil.PREF_BIOMETRIC_TOKEN_ENABLED, true);
+//            if(biometricAuthButton.isChecked())
+//                StaticUtil.okButtonAlertDialog(SettingsActivity.this, getString(R.string.device_authentication_enabled_successfully));
+        }
+        else{
+            sharedPreferencesFactory = SharedPreferencesFactory.getInstance(SettingActivity.this);
+            sharedPreferencesFactory.writePreferenceBoolValue(PrefUtil.PREF_BIOMETRIC_TOKEN_ENABLED, false);
+            //biometricAuthButton.setChecked(!biometricAuthButton.isChecked());
+            StaticUtil.showCustomToast(SettingActivity.this,"Failed To Add Device Authentication");
+        }
 
 
-
-         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode==RESULT_OK) {
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode==RESULT_OK) {
           CropImage.ActivityResult result = CropImage.getActivityResult(data);
         //if the result code is OK
 
@@ -353,11 +382,111 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.btnAddFingerPrint:
+                    openBiometricPrompt();
+                break;
+
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    private void openBiometricPrompt(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            BiometricAuthentication biometricAuthentication = new BiometricAuthentication(this,false);
+            biometricAuthentication.setBioMetricCallBack(this);
+            if (biometricAuthentication.checkBiometricSupportFromPie()) {
+                biometricAuthentication.authenticateUser();
+            }
+        }
+        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(StaticUtil.hasFingerPrintAdded(SettingActivity.this))
+                showDeviceAuthFromMarshMellowBottomSheet();
+            else
+                showAddFingerPrintToDevicePrompt();
+        }
+    }
+
+    private void showDeviceAuthFromMarshMellowBottomSheet() {
+        DeviceAuthBottomSheetFragment deviceAuthBottomSheetFragment = new DeviceAuthBottomSheetFragment(this);
+        deviceAuthBottomSheetDialog = MyBottomSheetDialog.newInstance();
+        deviceAuthBottomSheetDialog.setFragment(deviceAuthBottomSheetFragment);
+        deviceAuthBottomSheetDialog.setCancelable(false);
+        deviceAuthBottomSheetFragment.setCallback(new DeviceAuthBottomSheetFragment.IDeviceAuthBottomSheetCallback() {
+            @Override
+            public void dismissBottomSheet() {
+                deviceAuthBottomSheetDialog.dismiss();
+            }
+        });
+        //deviceAuthBottomSheetDialog.show(getSupportFragmentManager(), deviceAuthBottomSheetFragment.getTag());
+    }
+
+    @Override
+    public void biometricPromptCallBack(Boolean isFingerPrintMatch, String message) {
+        if(isFingerPrintMatch == true) {
+            Boolean authEnabled = sharedPreferencesFactory.getPreferenceBoolValue(PrefUtil.PREF_BIOMETRIC_TOKEN_ENABLED);
+            sharedPreferencesFactory.writePreferenceBoolValue(PrefUtil.PREF_BIOMETRIC_TOKEN_ENABLED,!authEnabled);
+            if(deviceAuthBottomSheetDialog!=null)
+                deviceAuthBottomSheetDialog.dismiss();
+            //if(biometricAuthButton.isChecked())
+              //  StaticUtil.okButtonAlertDialog(SettingsActivity.this, getString(R.string.device_authentication_enabled_successfully));
+        }
+        else{
+            //sharedPreferencesFactory.writePreferenceBoolValue(PrefUtil.PREF_BIOMETRIC_TOKEN_ENABLED, !biometricAuthButton.isChecked());
+           // biometricAuthButton.setChecked(!biometricAuthButton.isChecked());
+
+        }
 
     }
 
+
+    @Override
+    public void showAddFingerPrintToDevicePrompt() {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View view = inflater.inflate(R.layout.biometric_authentication_alert_dialog, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(view).create();
+        final AlertDialog alertDialog = builder.show();
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        alertDialog.setCanceledOnTouchOutside(false);
+        TextView txtYes = view.findViewById(R.id.txtYes);
+        TextView txtNo = view.findViewById(R.id.txtNo);
+        txtNo.setText(getString(R.string.cancel));
+        txtYes.setText(getString(R.string.open_settings_txt));
+        TextView txtStatement = view.findViewById(R.id.txtStatement);
+        txtStatement.setText(this.getResources().getString(R.string.add_finger_print_to_your_device_txt));
+        if(deviceAuthBottomSheetDialog!=null)
+            deviceAuthBottomSheetDialog.dismiss();
+        txtNo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sharedPreferencesFactory = SharedPreferencesFactory.getInstance(SettingActivity.this);
+                sharedPreferencesFactory.writePreferenceBoolValue(PrefUtil.PREF_BIOMETRIC_TOKEN_ENABLED,false);
+                //biometricAuthButton.setChecked(!biometricAuthButton.isChecked());
+                alertDialog.cancel();
+            }
+        });
+
+        txtYes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = null;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    intent= new Intent(Settings.ACTION_SECURITY_SETTINGS);
+                }
+                else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    intent= new Intent(Settings.ACTION_SECURITY_SETTINGS);
+                }
+                startActivityForResult(intent, REQUESTCODE_SECURITY_SETTINGS);
+                alertDialog.cancel();
+            }
+        });
+    }
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if(isChecked==true){

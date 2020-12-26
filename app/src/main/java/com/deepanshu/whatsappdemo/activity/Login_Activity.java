@@ -1,10 +1,16 @@
 package com.deepanshu.whatsappdemo.activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.biometric.BiometricManager;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.hardware.fingerprint.FingerprintManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -16,8 +22,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.deepanshu.whatsappdemo.custom.MyBottomSheetDialog;
 import com.deepanshu.whatsappdemo.extraUtil.ColoredSnackbar;
 import com.deepanshu.whatsappdemo.R;
+import com.deepanshu.whatsappdemo.extraUtil.PrefUtil;
+import com.deepanshu.whatsappdemo.extraUtil.SharedPreferencesFactory;
+import com.deepanshu.whatsappdemo.extraUtil.StaticUtil;
+import com.deepanshu.whatsappdemo.fragment.DeviceAuthBottomSheetFragment;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -42,6 +53,8 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
+import static java.security.AccessController.getContext;
+
 public class Login_Activity extends AppCompatActivity {
     //private FirebaseUser currentUser;
     private FirebaseAuth mAuth;
@@ -54,9 +67,11 @@ public class Login_Activity extends AppCompatActivity {
     private DatabaseReference userRef;
     com.facebook.login.widget.LoginButton loginButton;
     CallbackManager callbackManager;
+    private MyBottomSheetDialog deviceAuthBottomSheetDialog;
 
     // private static final int RC_SIGN_IN = 123;
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +80,12 @@ public class Login_Activity extends AppCompatActivity {
         userRef= FirebaseDatabase.getInstance().getReference().child("Users");
         //currentUser=mAuth.getCurrentUser();
         initializedField();
+        SharedPreferencesFactory sharedPreferencesFactory = SharedPreferencesFactory.getInstance(this);
+        SharedPreferences prefs = sharedPreferencesFactory.getSharedPreferences(MODE_PRIVATE);
+
+        if(sharedPreferencesFactory.getPreferenceBoolValue(PrefUtil.PREF_BIOMETRIC_TOKEN_ENABLED)){
+           // launchBiometricPrompt();
+        }
         LoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -280,5 +301,35 @@ public class Login_Activity extends AppCompatActivity {
         loadingBar=new ProgressDialog(this);
 
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    private void launchBiometricPrompt(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            BiometricAuthentication biometricAuthentication = new BiometricAuthentication(this,true);
+            if (biometricAuthentication.checkBiometricSupportFromPie()) {
+                biometricAuthentication.authenticateUser();
+            }
+        }
+        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(StaticUtil.hasFingerPrintAdded(this)) {
+                showDeviceAuthFromMarshMellowBottomSheet();
+            }
+        }
+    }
+
+    private void showDeviceAuthFromMarshMellowBottomSheet() {
+        DeviceAuthBottomSheetFragment deviceAuthBottomSheetFragment = new DeviceAuthBottomSheetFragment(this);
+        deviceAuthBottomSheetDialog = MyBottomSheetDialog.newInstance();
+        deviceAuthBottomSheetDialog.setFragment(deviceAuthBottomSheetFragment);
+        deviceAuthBottomSheetDialog.setCancelable(false);
+        deviceAuthBottomSheetFragment.setCallback(new DeviceAuthBottomSheetFragment.IDeviceAuthBottomSheetCallback() {
+            @Override
+            public void dismissBottomSheet() {
+                deviceAuthBottomSheetDialog.dismiss();
+            }
+        });
+        deviceAuthBottomSheetDialog.show(getSupportFragmentManager(), deviceAuthBottomSheetFragment.getTag());
+    }
+
 
 }

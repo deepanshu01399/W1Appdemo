@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient"
+    android:orientation="vertical"
     tools:context=".activity.SettingActivity">
 
     <include
@@ -14,89 +15,87 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="@dimen/_10dp"
-        android:layout_below="@id/setting_toolbar"
-        android:id="@+id/profile_linearlayout"
-        >
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/profile_image"
-            android:layout_width="@dimen/twofinvezero"
-            android:layout_height="@dimen/twofinvezero"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:src="@drawable/profile_image"
-            app:civ_border_color="@color/home_title_color"
-            app:civ_border_width="5dp" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/profile_image"
-            android:layout_centerVertical="true"
-            android:layout_marginTop="-50dp"
-            android:layout_marginLeft="250dp"
-            android:src="@drawable/ic_mode_edit_black_24dp"></ImageView>
-    </RelativeLayout>
-    <EditText
-        android:id="@+id/set_user_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/profile_linearlayout"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="15dp"
-        android:background="@drawable/input"
-        android:drawableStart="@drawable/edit_profile"
-        android:hint="Username"
-        android:inputType="textMultiLine"
-        android:padding="6dp"
-        android:textStyle="bold"></EditText>
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/_10dp"
+            android:layout_below="@id/setting_toolbar"
+            android:id="@+id/profile_linearlayout"
+            >
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profile_image"
+                android:layout_width="@dimen/twohundred"
+                android:layout_height="@dimen/twohundred"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/profile_image"
+                app:civ_border_color="@color/home_title_color"
+                app:civ_border_width="5dp" />
 
-    <EditText
-        android:id="@+id/set_Profile_status"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/set_user_name"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="15dp"
-        android:background="@drawable/input"
-        android:drawableStart="@drawable/edit_status"
-        android:hint="hey ! i am available now"
-        android:inputType="textMultiLine"
-        android:padding="6dp"
-        android:textStyle="bold"></EditText>
+            <ImageView
+                android:layout_width="wrap_content"
 
-    <Button
-        android:id="@+id/update_setting_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/set_Profile_status"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="15dp"
-        android:background="@drawable/button_background"
-        android:backgroundTint="@color/home_title_color"
-        android:hint="Username"
-        android:inputType="textMultiLine"
-        android:padding="6dp"
-        android:text="Update"
-        android:textAllCaps="false"
-        android:textColor="@android:color/background_light"
-        android:textSize="20sp"
-        android:textStyle="bold"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/profile_image"
+                android:layout_centerVertical="true"
+                android:background="?android:selectableItemBackground"
+                android:layout_marginTop="-45dp"
+                android:layout_marginLeft="280dp"
+                android:src="@drawable/ic_mode_edit_black_24dp"/>
+        </RelativeLayout>
+        <EditText
+            android:id="@+id/set_user_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/profile_linearlayout"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/input"
+            android:drawableStart="@drawable/edit_profile"
+            android:hint="Username"
+            android:inputType="textMultiLine"
+            android:padding="6dp"
+            android:textStyle="bold"/>
 
-        ></Button>
+        <EditText
+            android:id="@+id/set_Profile_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/set_user_name"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/input"
+            android:drawableStart="@drawable/edit_status"
+            android:hint="hey ! i am available now"
+            android:inputType="textMultiLine"
+            android:padding="6dp"
+            android:textStyle="bold"/>
+
+        <Button
+            android:id="@+id/update_setting_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/set_Profile_status"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/button_background"
+            android:backgroundTint="@color/home_title_color"
+            android:hint="Username"
+            android:inputType="textMultiLine"
+            android:padding="6dp"
+            android:text="Update"
+            android:textAllCaps="false"
+            android:textColor="@android:color/background_light"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/mapcard"
-            android:layout_below="@id/update_setting_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="@dimen/_4dp"
@@ -122,33 +121,44 @@
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cvToggle"
-        android:layout_below="@id/update_setting_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="@dimen/_4dp"
-        app:cardElevation="@dimen/_4dp"
-        app:cardCornerRadius="@dimen/dp_five"
-        app:cardUseCompatPadding="true"
-        android:layout_marginStart="@dimen/_10dp"
-        android:layout_marginEnd="@dimen/_10dp"
-        app:strokeWidth="@dimen/_1dp"
-        android:backgroundTint="@color/home_title_color"
-        android:clipToPadding="false"
-        android:layout_marginBottom="@dimen/dp_eight">
-        <Switch
-            android:id="@+id/switchTransaction"
+            android:id="@+id/cvToggle"
+            android:layout_below="@id/update_setting_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:text="Whatsapp Mode"
-            android:textColor="@color/white"
-            android:textSize="@dimen/sp_eighteen"
-            android:layout_margin="@dimen/dp_ten"/>
-    </com.google.android.material.card.MaterialCardView>
+            android:elevation="@dimen/_4dp"
+            app:cardElevation="@dimen/_4dp"
+            app:cardCornerRadius="@dimen/dp_five"
+            app:cardUseCompatPadding="true"
+            android:layout_marginStart="@dimen/_10dp"
+            android:layout_marginEnd="@dimen/_10dp"
+            app:strokeWidth="@dimen/_1dp"
+            android:backgroundTint="@color/home_title_color"
+            android:clipToPadding="false"
+            android:layout_marginBottom="@dimen/dp_eight">
+            <Switch
+                android:id="@+id/switchTransaction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:text="Whatsapp Mode"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_eighteen"
+                android:layout_margin="@dimen/dp_ten"/>
+        </com.google.android.material.card.MaterialCardView>
 
+        <Button
+            android:id="@+id/btnAddFingerPrint"
+            style="@style/StyleButtonText"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_10dp"
+            android:layout_marginLeft="@dimen/_60dp"
+            android:layout_marginRight="@dimen/_60dp"
+            android:layout_marginBottom="@dimen/_20sp"
+            android:background="@drawable/signin_selector"
+            android:elevation="5dp"
+            android:text="Add Fingerprint" />
 
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

@@ -17,6 +17,12 @@
     <string name="cancel">Cancel</string>
     <string name="yes_log_out">Yes log out</string>
     <string name="are_you_sure_you_n_want_to_log_out">Are You Sure You,\n Want To Log Out?</string>
+    <string name="biometric_alert_dialog_txt">Do You want to setup with \"<b>Device Authentication</b>\" to access Your Account?</string>
+    <string name="open_settings_txt">Open Settings</string>
+    <string name="add_finger_print_to_your_device_txt">To enable "Device Authentication" you must add Fingerprint or Face Id first.</string>
+    <color name="shimmer_background">#dddddd</color>
+    <string name="please_scan_your_fingerprint_txt">Please scan your fingerprint once to Activate Device Authentication.</string>
+    <string name="activate_device_authentication_txt">Activate Device Authentication</string>
 
 
 </resources>

@@ -14,7 +14,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,9 +30,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.deepanshu.whatsappdemo.custom.MyBottomSheetDialog;
 import com.deepanshu.whatsappdemo.extraUtil.ColoredSnackbar;
 import com.deepanshu.whatsappdemo.extraUtil.ConnectivityReceiver;
+import com.deepanshu.whatsappdemo.extraUtil.PrefUtil;
 import com.deepanshu.whatsappdemo.interfaces.BaseInterface;
+import com.deepanshu.whatsappdemo.interfaces.BiometricPromptCallBack;
 import com.deepanshu.whatsappdemo.model.FindFriends;
 import com.deepanshu.whatsappdemo.extraUtil.Myapplication;
 import com.deepanshu.whatsappdemo.R;
@@ -56,7 +62,7 @@ import pl.droidsonroids.gif.GifImageView;
 
 import static com.deepanshu.whatsappdemo.activity.SettingActivity.CHK_STATUS;
 
-public class MainActivity extends BaseActivity implements ConnectivityReceiver.ConnectivityReceiverListener, BaseInterface {
+public class MainActivity extends BaseActivity implements ConnectivityReceiver.ConnectivityReceiverListener, BiometricPromptCallBack, BaseInterface {
     public static final String ONLINE_STATUS = null;
     private Toolbar mToolbar;
     private ViewPager myViewPager;
@@ -76,6 +82,8 @@ public class MainActivity extends BaseActivity implements ConnectivityReceiver.C
     SharedPreferencesFactory sharedPreferencesFactory = null;
     SharedPreferences prefs;
     String first_name,last_name;
+    private MyBottomSheetDialog deviceAuthBottomSheetDialog = null;
+    private final Integer REQUESTCODE_SECURITY_SETTINGS = 201;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -243,6 +251,9 @@ public class MainActivity extends BaseActivity implements ConnectivityReceiver.C
         if (item.getItemId() == R.id.main_settings_options) {
             sendUserTOSettingActivity();
         }
+        if (item.getItemId() == R.id.main_getcontact) {
+            sendUserToContactActivity();
+        }
         if (item.getItemId() == R.id.main_find_Friends_option) {
             sendUserToFindFriendActivity();
 
@@ -358,6 +369,12 @@ public class MainActivity extends BaseActivity implements ConnectivityReceiver.C
         startActivity(settingIntent);
         //finish();
     }
+    private void sendUserToContactActivity() {
+        Intent settingIntent = new Intent(MainActivity.this, GetContactsList.class);
+        //settingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(settingIntent);
+        //finish();
+    }
 
     private void sendUserToFindFriendActivity() {
         Intent findFriendIntent = new Intent(MainActivity.this, FindFriends.class);
@@ -467,5 +484,62 @@ public class MainActivity extends BaseActivity implements ConnectivityReceiver.C
 
     }
 
+
+    @Override
+    public void biometricPromptCallBack(Boolean isFingerPrintMatch, String message) {
+        if(isFingerPrintMatch){
+            sharedPreferencesFactory = SharedPreferencesFactory.getInstance(this);
+            sharedPreferencesFactory.writePreferenceBoolValue(PrefUtil.PREF_BIOMETRIC_TOKEN_ENABLED, true);
+            if(deviceAuthBottomSheetDialog!=null)
+                deviceAuthBottomSheetDialog.dismiss();
+//            StaticUtil.okButtonAlertDialog(getContext(), getString(R.string.device_authentication_enabled_successfully));
+        }
+        else{
+            sharedPreferencesFactory = SharedPreferencesFactory.getInstance(this);
+            sharedPreferencesFactory.writePreferenceBoolValue(PrefUtil.PREF_BIOMETRIC_TOKEN_ENABLED, false);
+//            StaticUtil.showCustomToast(getContext(), "Device Authentication Failed");
+        }
+    }
+
+    @Override
+    public void showAddFingerPrintToDevicePrompt() {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View view = inflater.inflate(R.layout.biometric_authentication_alert_dialog, null);
+
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setView(view).create();
+        final android.app.AlertDialog alertDialog = builder.show();
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        alertDialog.setCanceledOnTouchOutside(false);
+        TextView txtYes = view.findViewById(R.id.txtYes);
+        TextView txtNo = view.findViewById(R.id.txtNo);
+        txtNo.setText(getString(R.string.cancel));
+        txtYes.setText(getString(R.string.open_settings_txt));
+        TextView txtStatement = view.findViewById(R.id.txtStatement);
+        txtStatement.setText(this.getResources().getString(R.string.add_finger_print_to_your_device_txt));
+        txtNo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sharedPreferencesFactory = SharedPreferencesFactory.getInstance(MainActivity.this);
+                sharedPreferencesFactory.writePreferenceBoolValue(PrefUtil.PREF_BIOMETRIC_TOKEN_ENABLED,false);
+                alertDialog.cancel();
+            }
+        });
+
+        txtYes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = null;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    intent= new Intent(Settings.ACTION_SECURITY_SETTINGS);
+                }
+                else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    intent= new Intent(Settings.ACTION_SECURITY_SETTINGS);
+                }
+                startActivityForResult(intent, REQUESTCODE_SECURITY_SETTINGS);
+                alertDialog.cancel();
+            }
+        });
+    }
 
 }
